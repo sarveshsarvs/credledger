@@ -1,56 +1,32 @@
-const express = require("express");
-const multer = require("multer");
-const crypto = require("crypto");
-const fs = require("fs");
-const pinataSDK = require("@pinata/sdk");
-require("dotenv").config();
-
-// --- Ethers v6 imports ---
-const { JsonRpcProvider, Wallet, Contract, keccak256, toUtf8Bytes } = require("ethers");
+// server.js
+import express from "express";
+import multer from "multer";
+import crypto from "crypto";
+import cors from "cors";
+import fs from "fs";
+import { addBlock, verifyCredential } from "./utils/blockchain.js"; // note .js
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
-
-// --- Blockchain Setup ---
-const provider = new JsonRpcProvider("https://rpc-mumbai.maticvigil.com");
-
-const privateKey = process.env.ISSUER_KEY;
-const wallet = new Wallet(privateKey, provider);
-
-const contractABI = JSON.parse(fs.readFileSync("abi.json"));
-const contractAddress = "YOUR_DEPLOYED_CONTRACT_ADDRESS";
-const contract = new Contract(contractAddress, contractABI, wallet);
-
-// --- Pinata (IPFS) Setup ---
-const pinata = new pinataSDK({
-  pinataApiKey: process.env.PINATA_KEY,
-  pinataSecretApiKey: process.env.PINATA_SECRET,
-});
-
-// --- API Endpoints ---
+app.use(cors());
+app.use(express.json());
 
 // Issue credential
 app.post("/issue", upload.single("file"), async (req, res) => {
   try {
-    const fileBuffer = fs.readFileSync(req.file.path);
-    const hash = crypto.createHash("sha256").update(fileBuffer).digest("hex");
+    const fileBuffer = req.file ? fs.readFileSync(req.file.path) : null;
+    const hash = crypto.createHash("sha256")
+      .update(req.body.learner + (fileBuffer || "") + Date.now())
+      .digest("hex");
 
-    // Upload file to IPFS
-    const ipfsResult = await pinata.pinFileToIPFS(fs.createReadStream(req.file.path));
+    const credential = {
+      learner: req.body.learner,
+      title: req.body.title || "Default Credential",
+      hash
+    };
 
-    // Call smart contract
-    const tx = await contract.issueCredential(
-      req.body.learner,
-      keccak256(toUtf8Bytes(hash))
-    );
-    await tx.wait();
-
-    res.json({
-      status: "success",
-      credentialHash: hash,
-      ipfsHash: ipfsResult.IpfsHash,
-      txHash: tx.hash,
-    });
+    const block = addBlock(credential);
+    res.json({ status: "success", credentialHash: block.credential.hash });
   } catch (err) {
     console.error(err);
     res.status(500).send("Error issuing credential");
@@ -58,15 +34,17 @@ app.post("/issue", upload.single("file"), async (req, res) => {
 });
 
 // Verify credential
-app.get("/verify/:hash", async (req, res) => {
-  try {
-    const hashBytes = keccak256(toUtf8Bytes(req.params.hash));
-    const valid = await contract.verifyCredential(hashBytes);
-    res.json({ valid });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Verification failed");
+app.get("/verify/:hash", (req, res) => {
+  const result = verifyCredential(req.params.hash);
+  if (result) {
+    res.json({ valid: true, block: result });
+  } else {
+    res.json({ valid: false });
   }
+});
+
+app.get("/", (req, res) => {
+  res.send("Credential backend is running!");
 });
 
 app.listen(3000, () => console.log("Server running on http://localhost:3000"));

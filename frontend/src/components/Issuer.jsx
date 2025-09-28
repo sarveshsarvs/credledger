@@ -17,7 +17,7 @@ export default function Issuer() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input type="text" placeholder="Learner wallet address" onChange={(e) => setLearner(e.target.value)} />
+      <input type="text" placeholder="Learner ID / Wallet" onChange={(e) => setLearner(e.target.value)} />
       <input type="file" onChange={(e) => setFile(e.target.files[0])} />
       <button type="submit">Issue Credential</button>
     </form>

@@ -31,5 +31,12 @@
     "hardhat": "^3.0.6",
     "mocha": "^11.7.2",
     "typescript": "~5.8.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "express": "^5.1.0",
+    "fs": "^0.0.1-security",
+    "multer": "^2.0.2"
   }
 }
