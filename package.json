@@ -1,0 +1,24 @@
+{
+  "name": "credledger",
+  "version": "1.0.0",
+  "description": "Decentralized skill credential platform — verifiable, secure, and tamper-proof certifications on blockchain.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sarveshsarvs/credledger.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/sarveshsarvs/credledger/issues"
+  },
+  "homepage": "https://github.com/sarveshsarvs/credledger#readme",
+  "devDependencies": {
+    "hardhat": "^3.0.6"
+  }
+}

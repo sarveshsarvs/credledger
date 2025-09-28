@@ -1,1 +1,42 @@
-*\node_modules
+# Node modules
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Build artifacts
+artifacts/
+cache/
+backend/uploads/
+frontend/build/
+frontend/.next/
+frontend/out/
+
+# Environment & secrets
+.env
+backend/.env
+frontend/.env
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+backend/debug.log
+frontend/debug.log
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+*.iml
+
+# Hardhat specific
+typechain/
+coverage/
+coverage.json
+
+# IPFS/Pinata uploads
+*.ipfs
