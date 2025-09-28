@@ -3,6 +3,21 @@ node_modules/
 backend/node_modules/
 frontend/node_modules/
 
+# Compilation output
+/dist
+
+# pnpm deploy output
+/bundle
+
+# Hardhat compilation (v2) support directory
+/cache
+
+# Typechain output
+/types
+
+# Hardhat coverage reports
+/coverage
+
 # Build artifacts
 artifacts/
 cache/
@@ -12,7 +27,7 @@ frontend/.next/
 frontend/out/
 
 # Environment & secrets
-.env
+/.env
 backend/.env
 frontend/.env
 
