@@ -6,6 +6,9 @@ import cors from "cors";
 import fs from "fs";
 import { addBlock, verifyCredential } from "./utils/blockchain.js"; // blockchain utils
 
+const PORT = 3000;
+const HOST = "0.0.0.0";
+
 const app = express();
 const upload = multer({ dest: "uploads/" });
 app.use(cors());
@@ -111,6 +114,6 @@ app.get("/", (req, res) => {
   res.send("Credential backend is running!");
 });
 
-app.listen(3000, () =>
-  console.log("Server running on http://localhost:3000")
-);
+app.listen(PORT, HOST, () => {
+  console.log(`Server running at http://${HOST}:${PORT}`);
+});
