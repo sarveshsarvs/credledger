@@ -1,6 +1,6 @@
 import LoginPage from "./components/LoginPage";
 
-function Demo() {
+function Login() {
   return (
     <div style={{ padding: "2rem" }}>
       <div>
@@ -10,4 +10,4 @@ function Demo() {
   );
 }
 
-export default Demo;
+export default Login;

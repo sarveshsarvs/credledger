@@ -44,7 +44,7 @@ function BlockchainPortalLogin() {
       <div style={styles.container}>
         <div style={styles.iconWrapper}>
           <div style={styles.shieldGlow}>
-            <span style={styles.shield}>🛡️</span>
+            <span style={styles.shield}>🛡</span>
           </div>
         </div>
         <h2 style={styles.title}>Blockchain Portal</h2>
@@ -93,7 +93,7 @@ function BlockchainPortalLogin() {
           </div>
 
           <button onClick={handleRecover} style={styles.recoverLink}>
-            🗝️ Recover Access Key?
+            🗝 Recover Access Key?
           </button>
         </form>
       </div>
