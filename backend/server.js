@@ -19,6 +19,7 @@ app.use(express.json());
 // -------------------- Paths --------------------
 const DB_DIR = path.join("database");
 const USERS_FILE = path.join(DB_DIR, "authentication.json");
+const ISSUER_FILE = path.join(DB_DIR, "issuer_profile.json");
 
 // Ensure database folder exists
 if (!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR, { recursive: true });
@@ -26,51 +27,69 @@ if (!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR, { recursive: true });
 // Ensure authentication.json exists
 if (!fs.existsSync(USERS_FILE)) fs.writeFileSync(USERS_FILE, "[]", "utf8");
 
+// Ensure issuer_profile.json exists
+if (!fs.existsSync(ISSUER_FILE)) fs.writeFileSync(ISSUER_FILE, "[]", "utf8");
+
 // -------------------- Helpers --------------------
 function loadUsers() {
-  const raw = fs.readFileSync(USERS_FILE, "utf8");
-  return JSON.parse(raw);
+  return JSON.parse(fs.readFileSync(USERS_FILE, "utf8"));
 }
 
 function saveUsers(users) {
   fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 }
 
+function loadIssuers() {
+  return JSON.parse(fs.readFileSync(ISSUER_FILE, "utf8"));
+}
+
+function saveIssuers(issuers) {
+  fs.writeFileSync(ISSUER_FILE, JSON.stringify(issuers, null, 2));
+}
+
 function createHash(password, timestamp) {
   return crypto.createHash("sha256").update(password + timestamp).digest("hex");
 }
 
+// -------------------- Routes --------------------
+
+// Signup / Registration
 app.post("/api/signup", (req, res) => {
-  const { username, password } = req.body;
-  if (!username || !password) {
-    return res.status(400).json({ message: "Username and password required" });
+  const { name, email, password, role } = req.body;
+  if (!email || !password || !name) {
+    return res.status(400).json({ message: "Name, email, and password required" });
   }
 
   const users = loadUsers();
-  if (users.find(u => u.username === username)) {
-    return res.status(400).json({ message: "User already exists" });
+  if (users.find((u) => u.email === email)) {
+    return res.status(400).json({ message: "Email already exists" });
   }
 
   const timestamp = new Date().toISOString();
   const hash = createHash(password, timestamp);
 
-  users.push({ username, timestamp, hash });
+  // Save to authentication.json
+  users.push({ email, timestamp, hash });
   saveUsers(users);
+
+  // Save to issuer_profile.json (name + email, no hash)
+  const issuers = loadIssuers();
+  issuers.push({ name, email, role });
+  saveIssuers(issuers);
 
   res.json({ message: "Signup successful" });
 });
 
+// Login
 app.post("/api/login", (req, res) => {
-  const { username, password } = req.body;
-  if (!username || !password) {
-    return res.status(400).json({ message: "Username and password required" });
+  const { email, password, role } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password required" });
   }
 
   const users = loadUsers();
-  const user = users.find(u => u.username === username);
-  if (!user) {
-    return res.status(400).json({ message: "User not found" });
-  }
+  const user = users.find((u) => u.email === email);
+  if (!user) return res.status(400).json({ message: "User not found" });
 
   const hash = createHash(password, user.timestamp);
   if (hash === user.hash) {
@@ -80,6 +99,7 @@ app.post("/api/login", (req, res) => {
   }
 });
 
+// Issue Credential
 app.post("/issue", upload.single("file"), async (req, res) => {
   try {
     const fileBuffer = req.file ? fs.readFileSync(req.file.path) : null;
@@ -102,6 +122,7 @@ app.post("/issue", upload.single("file"), async (req, res) => {
   }
 });
 
+// Verify Credential
 app.get("/verify/:hash", (req, res) => {
   const result = verifyCredential(req.params.hash);
   if (result) {

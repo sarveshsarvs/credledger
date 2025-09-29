@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'; // <-- import Link
 
 function CredLedgerLogin() {
   const [email, setEmail] = useState('');
@@ -29,26 +30,16 @@ function CredLedgerLogin() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const payload =
-      userType === 'verifier'
-        ? { role: userType, hash: hashValue }
-        : { username: email, password, role: userType };
+    const payload = userType === 'verifier'
+      ? { role: userType, hash: hashValue }
+      : { email, password, role: userType }; // ✅ fixed to send email
 
     const res = await fetch("http://localhost:3000/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-    const data = await res.json();
-    alert(res.ok ? "✅ " + data.message : "❌ " + data.message);
-  };
 
-  const handleSignUp = async () => {
-    const res = await fetch("http://localhost:3000/api/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: email, password, role: userType }),
-    });
     const data = await res.json();
     alert(res.ok ? "✅ " + data.message : "❌ " + data.message);
   };
@@ -123,9 +114,10 @@ function CredLedgerLogin() {
           {userType !== 'verifier' && (
             <div style={styles.signUpRow}>
               <span style={styles.signUpText}>Don’t have an account?</span>
-              <button onClick={handleSignUp} style={styles.signUpLink}>
+              {/* React Router Link */}
+              <Link to="/register" style={styles.signUpLink}>
                 Sign up
-              </button>
+              </Link>
             </div>
           )}
         </form>
@@ -151,9 +143,7 @@ const styles = {
     animation: 'pulse 3s infinite',
     textAlign: 'center',
   },
-  iconWrapper: {
-    marginBottom: '10px',
-  },
+  iconWrapper: { marginBottom: '10px' },
   shieldGlow: {
     display: 'inline-block',
     padding: '10px',
@@ -162,10 +152,7 @@ const styles = {
     boxShadow: '0 0 20px #00ffff',
     animation: 'pulse 2s infinite',
   },
-  shield: {
-    fontSize: '24px',
-    color: '#2D1B4F',
-  },
+  shield: { fontSize: '24px', color: '#2D1B4F' },
   title: {
     fontSize: '24px',
     fontWeight: 'bold',
@@ -174,11 +161,7 @@ const styles = {
     WebkitTextFillColor: 'transparent',
     marginBottom: '30px',
   },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '15px',
-  },
+  form: { display: 'flex', flexDirection: 'column', gap: '15px' },
   select: {
     padding: '10px',
     borderRadius: '6px',
@@ -222,15 +205,10 @@ const styles = {
     fontSize: '13px',
     color: '#D6C6F2',
   },
-  signUpText: {
-    marginRight: '6px',
-  },
+  signUpText: { marginRight: '6px' },
   signUpLink: {
-    background: 'none',
-    border: 'none',
     fontWeight: 'bold',
     fontSize: '13px',
-    padding: '0',
     cursor: 'pointer',
     backgroundImage: 'linear-gradient(90deg, #00ffff, #8a2be2)',
     WebkitBackgroundClip: 'text',
