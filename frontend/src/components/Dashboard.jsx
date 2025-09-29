@@ -1,71 +1,260 @@
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import { UserPlus, Users, GraduationCap } from "lucide-react";
 
+/**
+ * Dashboard with sidebar and hover glow + size increase on buttons.
+ * - Hover state is tracked with `hovered`.
+ * - Buttons merge base style + hover style when hovered.
+ */
+
+const initialLearners = [
+  { name: "Alice", id: "101", phone: "9998887777", completionDate: "2025-09-10" },
+  { name: "Bob", id: "102", phone: "8887776666", completionDate: "2025-09-15" },
+];
+
 const Dashboard = () => {
-  const navigate = useNavigate();
+  const [view, setView] = useState("home");
+  const [learners, setLearners] = useState(initialLearners);
+  const [form, setForm] = useState({ name: "", id: "", phone: "", completionDate: "" });
+  const [hovered, setHovered] = useState(null); // <-- fix: hover state
+
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleAddLearner = () => {
+    if (!form.name || !form.id || !form.phone || !form.completionDate) {
+      alert("Fill all fields");
+      return;
+    }
+    setLearners((prev) => [...prev, form]);
+    setForm({ name: "", id: "", phone: "", completionDate: "" });
+    alert("Learner added successfully!");
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1B143F] via-[#2D1B4F] to-[#4B2C82] flex items-center justify-center p-6 text-white">
-      <div className="w-full max-w-4xl">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center mb-4">
-            <GraduationCap className="h-12 w-12 text-cyan-400 mr-3 animate-pulse" />
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-              Learner Hub
-            </h1>
-          </div>
-          <p className="text-xl text-gray-300">
-            Manage and track your learners' progress with ease
-          </p>
+    <div style={styles.wrapper}>
+      {/* Sidebar */}
+      <div style={styles.sidebar}>
+        <div style={styles.logo}>
+          <GraduationCap size={32} color="#00ffff" />
+          <h2 style={styles.logoText}>Learner Hub</h2>
         </div>
 
-        {/* Action Cards */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto">
-          {/* Add New Learner Card */}
-          <div className="p-8 bg-white bg-opacity-10 rounded-2xl shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 text-center">
-            <div className="mx-auto w-16 h-16 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-full flex items-center justify-center mb-4 animate-pulse">
-              <UserPlus className="h-8 w-8 text-white" />
-            </div>
-            <h2 className="text-2xl font-bold mb-2">Add New Learner</h2>
-            <p className="text-gray-300 mb-4">
-              Register a new learner and track their course progress
-            </p>
+        <button
+          style={{
+            ...styles.sidebarBtn,
+            ...(hovered === "addBtn" ? styles.sidebarBtnHover : {}),
+          }}
+          onMouseEnter={() => setHovered("addBtn")}
+          onMouseLeave={() => setHovered(null)}
+          onClick={() => setView("add")}
+        >
+          <UserPlus style={{ marginRight: 8 }} /> Add Learner
+        </button>
+
+        <button
+          style={{
+            ...styles.sidebarBtn,
+            ...(hovered === "viewBtn" ? styles.sidebarBtnHover : {}),
+          }}
+          onMouseEnter={() => setHovered("viewBtn")}
+          onMouseLeave={() => setHovered(null)}
+          onClick={() => setView("view")}
+        >
+          <Users style={{ marginRight: 8 }} /> View Learners
+        </button>
+      </div>
+
+      {/* Main Content */}
+      <div style={styles.content}>
+        {view === "home" && (
+          <div style={styles.section}>
+            <h1>Welcome to Learner Hub</h1>
+            <p>Select an option from the sidebar</p>
+          </div>
+        )}
+
+        {view === "add" && (
+          <div style={styles.section}>
+            <h2>Add New Learner</h2>
+            <input
+              type="text"
+              placeholder="Name"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              style={styles.input}
+            />
+            <input
+              type="text"
+              placeholder="ID"
+              name="id"
+              value={form.id}
+              onChange={handleChange}
+              style={styles.input}
+            />
+            <input
+              type="text"
+              placeholder="Phone"
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
+              style={styles.input}
+            />
+            <input
+              type="date"
+              name="completionDate"
+              value={form.completionDate}
+              onChange={handleChange}
+              style={styles.input}
+            />
+
             <button
-              onClick={() => navigate("/add-learner")}
-              className="w-full bg-gradient-to-r from-cyan-400 to-purple-500 font-semibold py-3 rounded-lg hover:scale-105 transition-transform duration-300"
+              style={{
+                ...styles.addBtn,
+                ...(hovered === "saveBtn" ? styles.addBtnHover : {}),
+              }}
+              onMouseEnter={() => setHovered("saveBtn")}
+              onMouseLeave={() => setHovered(null)}
+              onClick={handleAddLearner}
             >
-              Get Started
+              Save Learner
             </button>
           </div>
+        )}
 
-          {/* Show All Learners Card */}
-          <div className="p-8 bg-white bg-opacity-10 rounded-2xl shadow-lg hover:shadow-purple-500/50 transition-all duration-300 text-center">
-            <div className="mx-auto w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mb-4 animate-pulse">
-              <Users className="h-8 w-8 text-white" />
-            </div>
-            <h2 className="text-2xl font-bold mb-2">View All Learners</h2>
-            <p className="text-gray-300 mb-4">
-              Browse and manage all registered learners in one place
-            </p>
-            <button
-              onClick={() => navigate("/show-learners")}
-              className="w-full border-2 border-white text-white font-semibold py-3 rounded-lg hover:bg-white hover:text-black transition-all duration-300 hover:scale-105"
-            >
-              View Learners
-            </button>
+        {view === "view" && (
+          <div style={styles.section}>
+            <h2>All Learners</h2>
+            {learners.length === 0 ? (
+              <p>No learners yet</p>
+            ) : (
+              <table style={styles.table}>
+                <thead>
+                  <tr>
+                    <th style={styles.th}>Name</th>
+                    <th style={styles.th}>ID</th>
+                    <th style={styles.th}>Phone</th>
+                    <th style={styles.th}>Completion Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {learners.map((l, i) => (
+                    <tr key={i}>
+                      <td style={styles.td}>{l.name}</td>
+                      <td style={styles.td}>{l.id}</td>
+                      <td style={styles.td}>{l.phone}</td>
+                      <td style={styles.td}>{l.completionDate}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="mt-16 text-center">
-          <p className="text-sm text-gray-300">
-            Empowering education through technology
-          </p>
-        </div>
+        )}
       </div>
     </div>
   );
 };
 
 export default Dashboard;
+
+/* Styles */
+const styles = {
+  wrapper: {
+    display: "flex",
+    height: "100vh",
+    background: "linear-gradient(135deg, #1B143F, #2D1B4F, #4B2C82)",
+    color: "#fff",
+    fontFamily: "Arial, sans-serif",
+  },
+  sidebar: {
+    width: "250px",
+    background: "rgba(20, 10, 50, 0.95)",
+    padding: "20px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "15px",
+    boxShadow: "2px 0 10px rgba(0,0,0,0.4)",
+  },
+  logo: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: "30px",
+    gap: "10px",
+  },
+  logoText: {
+    fontSize: "20px",
+    fontWeight: "bold",
+    background: "linear-gradient(90deg, #00ffff, #8a2be2)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+  },
+  sidebarBtn: {
+    display: "flex",
+    alignItems: "center",
+    padding: "12px",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    background: "linear-gradient(90deg, #00ffff, #8a2be2)",
+    color: "#fff",
+    boxShadow: "0 0 10px rgba(138,43,226,0.35)",
+    transition: "transform 0.18s ease, box-shadow 0.18s ease",
+  },
+  sidebarBtnHover: {
+    transform: "scale(1.06)",
+    boxShadow: "0 6px 30px rgba(0,255,255,0.14), 0 0 40px rgba(138,43,226,0.35)",
+  },
+  content: {
+    flex: 1,
+    padding: "30px",
+    overflowY: "auto",
+  },
+  section: {
+    background: "rgba(255,255,255,0.03)",
+    padding: "20px",
+    borderRadius: "10px",
+    boxShadow: "0 0 15px rgba(0,0,0,0.3)",
+  },
+  input: {
+    width: "100%",
+    padding: "10px",
+    margin: "10px 0",
+    borderRadius: "6px",
+    border: "1px solid #6C4AB6",
+    backgroundColor: "#1e1e2e",
+    color: "#fff",
+    outline: "none",
+  },
+  addBtn: {
+    marginTop: "10px",
+    padding: "12px",
+    width: "100%",
+    background: "linear-gradient(90deg, #00ffff, #8a2be2)",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    color: "#fff",
+    transition: "transform 0.18s ease, box-shadow 0.18s ease",
+  },
+  addBtnHover: {
+    transform: "scale(1.04)",
+    boxShadow: "0 8px 36px rgba(0,255,255,0.12), 0 0 40px rgba(138,43,226,0.28)",
+  },
+  table: {
+    width: "100%",
+    borderCollapse: "collapse",
+    marginTop: "15px",
+  },
+  th: {
+    borderBottom: "1px solid #666",
+    padding: "10px",
+    textAlign: "left",
+  },
+  td: {
+    borderBottom: "1px solid #333",
+    padding: "10px",
+  },
+};
