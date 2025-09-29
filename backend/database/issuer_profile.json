@@ -49,5 +49,12 @@
         "hash": "6b18de35bd975612da20b27e189a2521c9e907bd5053775bbdcb340f8c2f5a56"
       }
     ]
+  },
+  {
+    "name": "aa",
+    "email": "bbb@gmail.com",
+    "role": "issuer",
+    "institution": "Ramakrishna college of engineering",
+    "learners": []
   }
 ]
