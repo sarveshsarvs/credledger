@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // ✅ useNavigate
+import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 function CredLedgerLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userType, setUserType] = useState('');
+  const [userType, setUserType] = useState('verifier');
   const [hashValue, setHashValue] = useState('');
+  const navigate = useNavigate();
 
-  const navigate = useNavigate(); // ✅ get navigate function
+ 
 
   useEffect(() => {
     document.body.style.margin = '0';
@@ -32,9 +34,12 @@ function CredLedgerLogin() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const payload = userType === 'verifier'
-      ? { role: userType, hash: hashValue }
-      : { email, password, role: userType }; // ✅ login via email
+
+    if (userType === "verifier") {
+      return handleVerify();
+    }
+
+    const payload =  { email, password, role: userType };
 
     const res = await fetch("http://localhost:3000/api/login", {
       method: "POST",
@@ -51,6 +56,22 @@ function CredLedgerLogin() {
       alert("❌ " + data.message);
     }
   };
+
+  const handleVerify = async () => {
+    if (!hashValue) {
+      return alert("Please enter a hash value");
+    }
+
+    try {
+      const res = await fetch(`http://localhost:3000/verify/${hashValue}`); 
+      const data = await res.json();
+      navigate("/verification-result", { state: data });
+    } catch (err) {
+      console.error(err);
+      alert("❌ Error verifying credential");
+    }
+  };
+
 
   return (
     <div style={styles.wrapper}>
@@ -69,9 +90,8 @@ function CredLedgerLogin() {
             style={styles.select}
             required
           >
-            <option value="">-- Select User Type --</option>
-            <option value="issuer">Issuer</option>
             <option value="verifier">Verifier</option>
+            <option value="issuer">Issuer</option>
           </select>
 
           {userType === 'verifier' ? (
