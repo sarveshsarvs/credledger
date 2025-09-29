@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 function CredLedgerLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [userType, setUserType] = useState('');
+  const [hashValue, setHashValue] = useState('');
 
   useEffect(() => {
     document.body.style.margin = '0';
@@ -25,27 +27,31 @@ function CredLedgerLogin() {
     document.head.appendChild(styleSheet);
   }, []);
 
-const handleLogin = async (e) => {
-  e.preventDefault();
-  const res = await fetch("http://localhost:3000/api/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username: email, password }),
-  });
-  const data = await res.json();
-  alert(res.ok ? "✅ " + data.message : "❌ " + data.message);
-};
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const payload =
+      userType === 'verifier'
+        ? { role: userType, hash: hashValue }
+        : { username: email, password, role: userType };
 
-const handleSignUp = async () => {
-  const res = await fetch("http://localhost:3000/api/signup", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username: email, password }),
-  });
-  const data = await res.json();
-  alert(res.ok ? "✅ " + data.message : "❌ " + data.message);
-};
+    const res = await fetch("http://localhost:3000/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    alert(res.ok ? "✅ " + data.message : "❌ " + data.message);
+  };
 
+  const handleSignUp = async () => {
+    const res = await fetch("http://localhost:3000/api/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: email, password, role: userType }),
+    });
+    const data = await res.json();
+    alert(res.ok ? "✅ " + data.message : "❌ " + data.message);
+  };
 
   return (
     <div style={styles.wrapper}>
@@ -58,22 +64,46 @@ const handleSignUp = async () => {
         <h2 style={styles.title}>Cred Ledger</h2>
 
         <form style={styles.form}>
-          <input
-            type="email"
-            placeholder="Enter your email address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={styles.input}
+          <select
+            value={userType}
+            onChange={(e) => setUserType(e.target.value)}
+            style={styles.select}
             required
-          />
-          <input
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={styles.input}
-            required
-          />
+          >
+            <option value="">-- Select User Type --</option>
+            <option value="issuer">Issuer</option>
+            <option value="verifier">Verifier</option>
+          </select>
+
+          {userType === 'verifier' ? (
+            <input
+              type="text"
+              placeholder="Enter hash value"
+              value={hashValue}
+              onChange={(e) => setHashValue(e.target.value)}
+              style={styles.input}
+              required
+            />
+          ) : (
+            <>
+              <input
+                type="email"
+                placeholder="Enter your email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                style={styles.input}
+                required
+              />
+              <input
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                style={styles.input}
+                required
+              />
+            </>
+          )}
 
           <button
             onClick={handleLogin}
@@ -87,15 +117,17 @@ const handleSignUp = async () => {
               e.target.style.boxShadow = styles.loginButton.boxShadow;
             }}
           >
-            Login
+            {userType === 'verifier' ? 'Verify' : 'Login'}
           </button>
 
-          <div style={styles.signUpRow}>
-            <span style={styles.signUpText}>Don’t have an account?</span>
-            <button onClick={handleSignUp} style={styles.signUpLink}>
-              Sign up
-            </button>
-          </div>
+          {userType !== 'verifier' && (
+            <div style={styles.signUpRow}>
+              <span style={styles.signUpText}>Don’t have an account?</span>
+              <button onClick={handleSignUp} style={styles.signUpLink}>
+                Sign up
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </div>
@@ -112,9 +144,9 @@ const styles = {
   },
   container: {
     backgroundColor: 'rgba(45, 27, 79, 0.95)',
-    padding: '30px',
+    padding: '40px',
     borderRadius: '16px',
-    width: '320px',
+    width: '360px',
     boxShadow: '0 0 30px #8a2be2',
     animation: 'pulse 3s infinite',
     textAlign: 'center',
@@ -146,6 +178,22 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     gap: '15px',
+  },
+  select: {
+    padding: '10px',
+    borderRadius: '6px',
+    border: '1px solid #6C4AB6',
+    backgroundColor: '#1e1e2e',
+    color: '#fff',
+    fontSize: '14px',
+    outline: 'none',
+    transition: 'box-shadow 0.3s ease, border-color 0.3s ease',
+    appearance: 'none',
+    backgroundImage: 'linear-gradient(90deg, #00ffff, #8a2be2)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: 'bold',
+    textAlignLast: 'center',
   },
   input: {
     padding: '10px',
