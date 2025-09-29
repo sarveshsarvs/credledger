@@ -131,39 +131,35 @@ function IssuerRegistration() {
             required
           />
 
-          <div style={styles.passwordWrapper}>
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              style={styles.input}
-              required
-            />
-            <span
-              style={styles.eyeIcon}
-              onClick={() => setShowPassword(prev => !prev)}
-            >
-              {showPassword ? "🙈" : "👁️"}
-            </span>
-          </div>
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={styles.input}
+            required
+          />
+          <span
+            style={styles.eyeIcon}
+            onClick={() => setShowPassword(prev => !prev)}
+          >
+            {showPassword ? "🙈" : "👁️"}
+          </span>
 
-          <div style={styles.passwordWrapper}>
-            <input
-              type={showConfirmPassword ? "text" : "password"}
-              placeholder="Confirm password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              style={styles.input}
-              required
-            />
-            <span
-              style={styles.eyeIcon}
-              onClick={() => setShowConfirmPassword(prev => !prev)}
-            >
-              {showConfirmPassword ? "🙈" : "👁️"}
-            </span>
-          </div>
+          <input
+            type={showConfirmPassword ? "text" : "password"}
+            placeholder="Confirm password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            style={styles.input}
+            required
+          />
+          <span
+            style={styles.eyeIcon}
+            onClick={() => setShowConfirmPassword(prev => !prev)}
+          >
+            {showConfirmPassword ? "🙈" : "👁️"}
+          </span>
 
           <button
             type="submit"
@@ -208,7 +204,16 @@ const styles = {
   shield: { fontSize: "24px", color: "#2D1B4F" },
   title: { fontSize: "24px", fontWeight: "bold", background: "linear-gradient(90deg, #00ffff, #8a2be2)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: "30px" },
   form: { display: "flex", flexDirection: "column", gap: "15px" },
-  input: { padding: "10px", borderRadius: "6px", border: "1px solid #6C4AB6", backgroundColor: "#1e1e2e", color: "#fff", fontSize: "14px", outline: "none", transition: "box-shadow 0.3s ease, border-color 0.3s ease", width: "100%" },
+  input: {
+    padding: '10px',
+    borderRadius: '6px',
+    border: '1px solid #6C4AB6',
+    backgroundColor: '#1e1e2e',
+    color: '#fff',
+    fontSize: '14px',
+    outline: 'none',
+    transition: 'box-shadow 0.3s ease, border-color 0.3s ease',
+  },
   institutionSelect: { padding: "10px", borderRadius: "6px", border: "1px solid #6C4AB6", backgroundColor: "#1e1e2e", color: "#fff", fontSize: "14px", outline: "none", width: "100%", cursor: "pointer" },
   passwordWrapper: { position: "relative" },
   eyeIcon: { position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", cursor: "pointer", fontSize: "18px", color: "#ccc" },
