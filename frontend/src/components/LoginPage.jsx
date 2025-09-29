@@ -15,17 +15,55 @@ function LoginPage() {
     document.body.style.overflow = 'hidden';
   }, []);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setActiveButton('login');
-    console.log('Login:', { email, password, rememberMe });
+    setActiveButton("login");
+
+    try {
+      const res = await fetch("http://localhost:3000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: email, password }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert("✅ " + data.message);
+        if (rememberMe) {
+          localStorage.setItem("user", email);
+        }
+      } else {
+        alert("❌ " + data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("❌ Server error");
+    }
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    setActiveButton('register');
-    console.log('Register:', { email, password });
+    setActiveButton("register");
+
+    try {
+      const res = await fetch("http://localhost:3000/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: email, password }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert("✅ " + data.message);
+      } else {
+        alert("❌ " + data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("❌ Server error");
+    }
   };
+
 
   return (
     <div style={styles.wrapper}>
