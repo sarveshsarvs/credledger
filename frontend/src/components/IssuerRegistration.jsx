@@ -7,7 +7,7 @@ function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [userType, setUserType] = useState("issuer"); // default issuer
+  const [userType, setUserType] = useState("issuer");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -72,7 +72,7 @@ function RegisterPage() {
             <span style={styles.shield}>🛡️</span>
           </div>
         </div>
-        <h2 style={styles.title}>Register</h2>
+        <h2 style={styles.title}>New User</h2>
 
         <form style={styles.form}>
           <input
@@ -122,6 +122,16 @@ function RegisterPage() {
           >
             Register
           </button>
+
+          <div style={styles.signInRow}>
+            <span style={styles.signInText}>Already have an account?</span>
+            <span
+              style={styles.signInLink}
+              onClick={() => navigate(-1)}
+            >
+              Sign in
+            </span>
+          </div>
         </form>
       </div>
     </div>
@@ -129,15 +139,82 @@ function RegisterPage() {
 }
 
 const styles = {
-  wrapper: { display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", color: "#fff" },
-  container: { backgroundColor: "rgba(45, 27, 79, 0.95)", padding: "40px", borderRadius: "16px", width: "360px", boxShadow: "0 0 30px #8a2be2", animation: "pulse 3s infinite", textAlign: "center" },
+  wrapper: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh",
+    color: "#fff",
+  },
+  container: {
+    backgroundColor: "rgba(45, 27, 79, 0.95)",
+    padding: "40px",
+    borderRadius: "16px",
+    width: "360px",
+    boxShadow: "0 0 30px #8a2be2",
+    animation: "pulse 3s infinite",
+    textAlign: "center",
+  },
   iconWrapper: { marginBottom: "10px" },
-  shieldGlow: { display: "inline-block", padding: "10px", borderRadius: "50%", backgroundColor: "#00ffff", boxShadow: "0 0 20px #00ffff", animation: "pulse 2s infinite" },
+  shieldGlow: {
+    display: "inline-block",
+    padding: "10px",
+    borderRadius: "50%",
+    backgroundColor: "#00ffff",
+    boxShadow: "0 0 20px #00ffff",
+    animation: "pulse 2s infinite",
+  },
   shield: { fontSize: "24px", color: "#2D1B4F" },
-  title: { fontSize: "24px", fontWeight: "bold", background: "linear-gradient(90deg, #00ffff, #8a2be2)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: "30px" },
-  form: { display: "flex", flexDirection: "column", gap: "15px" },
-  input: { padding: "10px", borderRadius: "6px", border: "1px solid #6C4AB6", backgroundColor: "#1e1e2e", color: "#fff", fontSize: "14px", outline: "none", transition: "box-shadow 0.3s ease, border-color 0.3s ease" },
-  loginButton: { padding: "12px", background: "linear-gradient(90deg, #00ffff, #8a2be2)", color: "#fff", fontWeight: "bold", border: "none", borderRadius: "6px", cursor: "pointer", boxShadow: "0 0 10px #8a2be2", transition: "all 0.3s ease", fontSize: "16px" },
+  title: {
+    fontSize: "24px",
+    fontWeight: "bold",
+    background: "linear-gradient(90deg, #00ffff, #8a2be2)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    marginBottom: "30px",
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "15px",
+  },
+  input: {
+    padding: "10px",
+    borderRadius: "6px",
+    border: "1px solid #6C4AB6",
+    backgroundColor: "#1e1e2e",
+    color: "#fff",
+    fontSize: "14px",
+    outline: "none",
+    transition: "box-shadow 0.3s ease, border-color 0.3s ease",
+  },
+  loginButton: {
+    padding: "12px",
+    background: "linear-gradient(90deg, #00ffff, #8a2be2)",
+    color: "#fff",
+    fontWeight: "bold",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer",
+    boxShadow: "0 0 10px #8a2be2",
+    transition: "all 0.3s ease",
+    fontSize: "16px",
+  },
+  signInRow: {
+    marginTop: "20px",
+    fontSize: "13px",
+    color: "#D6C6F2",
+  },
+  signInText: { marginRight: "6px" },
+  signInLink: {
+    fontWeight: "bold",
+    fontSize: "13px",
+    cursor: "pointer",
+    backgroundImage: "linear-gradient(90deg, #00ffff, #8a2be2)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    textDecoration: "underline",
+  },
 };
 
 export default RegisterPage;

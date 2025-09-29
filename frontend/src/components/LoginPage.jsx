@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 function CredLedgerLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userType, setUserType] = useState('verifier');
+  const [userType, setUserType] = useState('');
   const [hashValue, setHashValue] = useState('');
 
   useEffect(() => {
@@ -30,9 +30,11 @@ function CredLedgerLogin() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const payload = userType === 'verifier'
+    if (!userType) return alert("❌ Please select a user type.");
+
+    const payload = userType === 'Evaluator'
       ? { role: userType, hash: hashValue }
-      : { email, password, role: userType }; // ✅ fixed to send email
+      : { email, password, role: userType };
 
     const res = await fetch("http://localhost:3000/api/login", {
       method: "POST",
@@ -61,11 +63,14 @@ function CredLedgerLogin() {
             style={styles.select}
             required
           >
-            <option value="verifier">Verifier</option>
-            <option value="issuer">Issuer</option>
+            <option value="">-- Select User Type --</option>
+            <option value="Admin">Admin</option>
+            <option value="Coordinator">Coordinator</option>
+            <option value="Evaluator">Evaluator</option>
+            <option value="Team">Team</option>
           </select>
 
-          {userType === 'verifier' ? (
+          {userType === 'Evaluator' ? (
             <input
               type="text"
               placeholder="Enter hash value"
@@ -74,7 +79,7 @@ function CredLedgerLogin() {
               style={styles.input}
               required
             />
-          ) : (
+          ) : userType ? (
             <>
               <input
                 type="email"
@@ -93,7 +98,7 @@ function CredLedgerLogin() {
                 required
               />
             </>
-          )}
+          ) : null}
 
           <button
             onClick={handleLogin}
@@ -107,13 +112,12 @@ function CredLedgerLogin() {
               e.target.style.boxShadow = styles.loginButton.boxShadow;
             }}
           >
-            {userType === 'verifier' ? 'Verify' : 'Login'}
+            {userType === 'Evaluator' ? 'Verify' : 'Login'}
           </button>
 
-          {userType !== 'verifier' && (
+          {userType && userType !== 'Evaluator' && (
             <div style={styles.signUpRow}>
               <span style={styles.signUpText}>Don’t have an account?</span>
-              {/* React Router Link */}
               <Link to="/register" style={styles.signUpLink}>
                 Sign up
               </Link>
@@ -171,9 +175,6 @@ const styles = {
     outline: 'none',
     transition: 'box-shadow 0.3s ease, border-color 0.3s ease',
     appearance: 'none',
-    backgroundImage: 'linear-gradient(90deg, #00ffff, #8a2be2)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
     fontWeight: 'bold',
     textAlignLast: 'center',
   },
