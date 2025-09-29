@@ -4,7 +4,7 @@ import multer from "multer";
 import crypto from "crypto";
 import cors from "cors";
 import fs from "fs";
-import { addBlock, verifyCredential } from "./utils/blockchain.js"; // blockchain utils
+import { addBlock, verifyCredential } from "./blockchain.js";
 
 const PORT = 3000;
 const HOST = "0.0.0.0";
@@ -16,7 +16,6 @@ app.use(express.json());
 
 const USERS_FILE = "database/authentication.json";
 
-// ---------- Helpers ----------
 function loadUsers() {
   if (!fs.existsSync(USERS_FILE)) return [];
   return JSON.parse(fs.readFileSync(USERS_FILE, "utf8"));
@@ -30,9 +29,6 @@ function createHash(password, timestamp) {
   return crypto.createHash("sha256").update(password + timestamp).digest("hex");
 }
 
-// ---------- Authentication ----------
-
-// Signup
 app.post("/api/signup", (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
@@ -53,7 +49,6 @@ app.post("/api/signup", (req, res) => {
   res.json({ message: "Signup successful" });
 });
 
-// Login
 app.post("/api/login", (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
@@ -74,9 +69,6 @@ app.post("/api/login", (req, res) => {
   }
 });
 
-// ---------- Blockchain Routes ----------
-
-// Issue credential
 app.post("/issue", upload.single("file"), async (req, res) => {
   try {
     const fileBuffer = req.file ? fs.readFileSync(req.file.path) : null;
@@ -99,7 +91,6 @@ app.post("/issue", upload.single("file"), async (req, res) => {
   }
 });
 
-// Verify credential
 app.get("/verify/:hash", (req, res) => {
   const result = verifyCredential(req.params.hash);
   if (result) {
@@ -109,7 +100,6 @@ app.get("/verify/:hash", (req, res) => {
   }
 });
 
-// Root
 app.get("/", (req, res) => {
   res.send("Credential backend is running!");
 });
