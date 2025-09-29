@@ -161,6 +161,7 @@ const styles = {
     height: '100vh',
     color: '#fff',
   },
+  select: { padding: "10px", borderRadius: "6px", border: "1px solid #6C4AB6", backgroundColor: "#1e1e2e", color: "#fff", fontSize: "14px", outline: "none", width: "100%", cursor: "pointer" },
   container: {
     backgroundColor: 'rgba(45, 27, 79, 0.95)',
     padding: '30px',
@@ -189,7 +190,7 @@ const styles = {
     marginBottom: '30px',
   },
   form: { display: 'flex', flexDirection: 'column', gap: '15px' },
-  select: {
+  /*elect: {
     padding: '10px',
     borderRadius: '6px',
     border: '1px solid #6C4AB6',
@@ -204,7 +205,7 @@ const styles = {
     WebkitTextFillColor: 'transparent',
     fontWeight: 'bold',
     textAlignLast: 'center',
-  },
+  },*/
   input: {
     padding: '10px',
     borderRadius: '6px',
