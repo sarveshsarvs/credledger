@@ -1,5 +1,6 @@
 import Issuer from "./components/Issuer";
 import Verifier from "./components/Verifier";
+import Issuer2 from "./components/LoginPage";
 
 function App() {
   return (
