@@ -33,7 +33,7 @@ function CredLedgerLogin() {
     document.head.appendChild(styleSheet);
   }, []);
 
-   const handleLogin = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     if (userType === "verifier") {
@@ -49,7 +49,12 @@ function CredLedgerLogin() {
     });
 
     const data = await res.json();
-    alert(res.ok ? "✅ " + data.message : "❌ " + data.message);
+    if (res.ok) {
+      // ✅ redirect to dashboard on success
+      navigate('/dashboard');
+    } else {
+      alert("❌ " + data.message);
+    }
   };
 
   const handleVerify = async () => {
@@ -218,7 +223,7 @@ const styles = {
     fontWeight: 'bold',
     fontSize: '13px',
     cursor: 'pointer',
-    backgroundImage: 'linear-gradient(90deg, #00ffff, #8a2be2)',
+    backgroundImage: 'linear-gradient(90deg, #00ffff, #2b5fe2ff)',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     textDecoration: 'underline',
