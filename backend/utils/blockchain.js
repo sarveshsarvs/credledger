@@ -1,7 +1,7 @@
 import fs from "fs";
 import crypto from "crypto";
 
-const filePath = "blockchain.json";
+const filePath = "./database/blockchain.json";
 
 export function loadChain() {
   if (!fs.existsSync(filePath)) return [];
