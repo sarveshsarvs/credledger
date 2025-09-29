@@ -56,6 +56,8 @@ function CredLedgerLogin() {
       } else {
         alert("❌ " + data.message);
       }
+
+      
     } catch (err) {
       console.error(err);
       alert("❌ Error connecting to server");

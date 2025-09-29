@@ -2,6 +2,26 @@
   {
     "name": "poop",
     "email": "poop@gmail.com",
-    "role": "issuer"
+    "role": "issuer",
+    "learners": [
+      {
+        "name": "asdAS",
+        "email": "sarveshjrgar31@gmail.com",
+        "phone": "ASDAD",
+        "completionDate": "2025-09-24",
+        "skill": "ASDASD",
+        "skillDescription": "sfdwefewf",
+        "hash": "83f90a316a6c409e2a800ab3e47374d6ddcedc59c5308d87d026ecb5a3255ee2"
+      },
+      {
+        "name": "jkashfdkajhdsf",
+        "email": "celestehephzibah@gmail.com",
+        "phone": "dfasdf",
+        "completionDate": "2025-09-11",
+        "skill": "asdfasdf",
+        "skillDescription": "adsfasfasdfasdfadfasf",
+        "hash": "ae37d718aa7c5b11427028ef161f5aa7158a334aad88d25d16d5c31130e8d1d3"
+      }
+    ]
   }
 ]

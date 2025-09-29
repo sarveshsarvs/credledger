@@ -1,33 +1,79 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { UserPlus, Users, GraduationCap } from "lucide-react";
-
-/**
- * Dashboard with sidebar and hover glow + size increase on buttons.
- * - Hover state is tracked with `hovered`.
- * - Buttons merge base style + hover style when hovered.
- */
-
-const initialLearners = [
-  { name: "Alice", id: "101", phone: "9998887777", completionDate: "2025-09-10" },
-  { name: "Bob", id: "102", phone: "8887776666", completionDate: "2025-09-15" },
-];
 
 const Dashboard = () => {
   const [view, setView] = useState("home");
-  const [learners, setLearners] = useState(initialLearners);
-  const [form, setForm] = useState({ name: "", id: "", phone: "", completionDate: "" });
-  const [hovered, setHovered] = useState(null); // <-- fix: hover state
+  const [learners, setLearners] = useState([]);
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    completionDate: "",
+    skill: "",
+    skillDescription: "",
+  });
+  const [hovered, setHovered] = useState(null);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const issuerEmail = localStorage.getItem("issuerEmail");
 
-  const handleAddLearner = () => {
-    if (!form.name || !form.id || !form.phone || !form.completionDate) {
-      alert("Fill all fields");
+  // Load learners on mount or whenever view switches to 'view'
+  useEffect(() => {
+    if (!issuerEmail) return;
+
+    if (view === "view") {
+      fetch(`http://localhost:3000/api/learners?issuerEmail=${issuerEmail}`)
+        .then((res) => res.json())
+        .then((data) => setLearners(data))
+        .catch((err) => console.error("Error loading learners:", err));
+    }
+  }, [view, issuerEmail]);
+
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleAddLearner = async () => {
+    const { name, email, phone, completionDate, skill, skillDescription } = form;
+
+    if (!name || !email || !phone || !completionDate || !skill || !skillDescription) {
+      alert("Please fill all fields");
       return;
     }
-    setLearners((prev) => [...prev, form]);
-    setForm({ name: "", id: "", phone: "", completionDate: "" });
-    alert("Learner added successfully!");
+
+    if (!issuerEmail) {
+      alert("Issuer email missing. Please login again.");
+      return;
+    }
+
+    try {
+        console.log(JSON.stringify({ ...form }))
+      const res = await fetch("http://localhost:3000/api/add-learner", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert("✅ Learner added successfully");
+        // Clear form
+        setForm({
+          name: "",
+          email: "",
+          phone: "",
+          completionDate: "",
+          skill: "",
+          skillDescription: "",
+        });
+        // Update learners list locally
+        setLearners((prev) => [...prev, data.learner]);
+        setView("view"); // Switch to view tab to see new learner
+      } else {
+        alert("❌ " + data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("❌ Error adding learner");
+    }
   };
 
   return (
@@ -78,17 +124,17 @@ const Dashboard = () => {
             <h2>Add New Learner</h2>
             <input
               type="text"
-              placeholder="Name"
+              placeholder="Full Name"
               name="name"
               value={form.name}
               onChange={handleChange}
               style={styles.input}
             />
             <input
-              type="text"
-              placeholder="ID"
-              name="id"
-              value={form.id}
+              type="email"
+              placeholder="Email"
+              name="email"
+              value={form.email}
               onChange={handleChange}
               style={styles.input}
             />
@@ -106,6 +152,21 @@ const Dashboard = () => {
               value={form.completionDate}
               onChange={handleChange}
               style={styles.input}
+            />
+            <input
+              type="text"
+              placeholder="Skill"
+              name="skill"
+              value={form.skill}
+              onChange={handleChange}
+              style={styles.input}
+            />
+            <textarea
+              placeholder="Skill Description"
+              name="skillDescription"
+              value={form.skillDescription}
+              onChange={handleChange}
+              style={{ ...styles.input, height: "80px" }}
             />
 
             <button
@@ -132,18 +193,22 @@ const Dashboard = () => {
                 <thead>
                   <tr>
                     <th style={styles.th}>Name</th>
-                    <th style={styles.th}>ID</th>
+                    <th style={styles.th}>Email</th>
                     <th style={styles.th}>Phone</th>
                     <th style={styles.th}>Completion Date</th>
+                    <th style={styles.th}>Skill</th>
+                    <th style={styles.th}>Skill Description</th>
                   </tr>
                 </thead>
                 <tbody>
                   {learners.map((l, i) => (
                     <tr key={i}>
                       <td style={styles.td}>{l.name}</td>
-                      <td style={styles.td}>{l.id}</td>
+                      <td style={styles.td}>{l.email}</td>
                       <td style={styles.td}>{l.phone}</td>
                       <td style={styles.td}>{l.completionDate}</td>
+                      <td style={styles.td}>{l.skill}</td>
+                      <td style={styles.td}>{l.skillDescription}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -158,7 +223,7 @@ const Dashboard = () => {
 
 export default Dashboard;
 
-/* Styles */
+// -------------------- Styles --------------------
 const styles = {
   wrapper: {
     display: "flex",
@@ -241,7 +306,8 @@ const styles = {
   },
   addBtnHover: {
     transform: "scale(1.04)",
-    boxShadow: "0 8px 36px rgba(0,255,255,0.12), 0 0 40px rgba(138,43,226,0.28)",
+    boxShadow:
+      "0 8px 36px rgba(0,255,255,0.12), 0 0 40px rgba(138,43,226,0.28)",
   },
   table: {
     width: "100%",

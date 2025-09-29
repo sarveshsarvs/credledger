@@ -1,12 +1,16 @@
 import express from "express";
+import multer from "multer";
 import crypto from "crypto";
 import cors from "cors";
 import fs from "fs";
 import path from "path";
+import { addBlock, verifyCredential } from "./blockchain.js";
 
-const app = express();
 const PORT = 3000;
 const HOST = "0.0.0.0";
+
+const app = express();
+const upload = multer({ dest: "uploads/" });
 
 app.use(cors());
 app.use(express.json());
@@ -25,37 +29,45 @@ if (!fs.existsSync(ISSUER_FILE)) fs.writeFileSync(ISSUER_FILE, "[]", "utf8");
 function loadUsers() {
   return JSON.parse(fs.readFileSync(USERS_FILE, "utf8"));
 }
+
 function saveUsers(users) {
   fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 }
+
 function loadIssuers() {
   return JSON.parse(fs.readFileSync(ISSUER_FILE, "utf8"));
 }
+
 function saveIssuers(issuers) {
   fs.writeFileSync(ISSUER_FILE, JSON.stringify(issuers, null, 2));
 }
-function createHash(data) {
-  return crypto.createHash("sha256").update(data).digest("hex");
+
+function createHash(value, salt = "") {
+  return crypto.createHash("sha256").update(value + salt).digest("hex");
 }
 
 // -------------------- Routes --------------------
 
-// Signup
+// Signup / Registration
 app.post("/api/signup", (req, res) => {
-  const { name, email, password, role } = req.body;
-  if (!email || !password || !name) return res.status(400).json({ message: "Name, email, and password required" });
+  const { name, email, password, role, institution } = req.body;
+  if (!name || !email || !password || !role || !institution) {
+    return res.status(400).json({ message: "All fields required" });
+  }
 
   const users = loadUsers();
-  if (users.find((u) => u.email === email)) return res.status(400).json({ message: "Email already exists" });
+  if (users.find((u) => u.email === email)) {
+    return res.status(400).json({ message: "Email already exists" });
+  }
 
   const timestamp = new Date().toISOString();
-  const hash = createHash(password + timestamp);
+  const hash = createHash(password, timestamp);
 
   users.push({ email, timestamp, hash });
   saveUsers(users);
 
   const issuers = loadIssuers();
-  issuers.push({ name, email, role, learner_profiles: [] });
+  issuers.push({ name, email, role, institution, learners: [] });
   saveIssuers(issuers);
 
   res.json({ message: "Signup successful" });
@@ -63,47 +75,111 @@ app.post("/api/signup", (req, res) => {
 
 // Login
 app.post("/api/login", (req, res) => {
-  const { email, password, role } = req.body;
-  if (!email || !password) return res.status(400).json({ message: "Email and password required" });
+  const { email, password, role, hash } = req.body;
+
+  // Verifier login using hash
+  if (role === "verifier") {
+    if (!hash) return res.status(400).json({ message: "Hash required" });
+    const result = verifyCredential(hash);
+    if (result) return res.json({ message: "Credential valid", credential: result });
+    else return res.status(404).json({ message: "Credential invalid" });
+  }
+
+  // Issuer login using email/password
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password required" });
+  }
 
   const users = loadUsers();
   const user = users.find((u) => u.email === email);
-  if (!user) return res.status(400).json({ message: "User not found" });
+  if (!user) return res.status(404).json({ message: "User not found" });
 
-  const hash = createHash(password + user.timestamp);
-  if (hash === user.hash) {
-    res.json({ message: "Login successful", email });
+  const hashed = createHash(password, user.timestamp);
+  if (hashed === user.hash) {
+    return res.json({ message: "Login successful", issuerEmail: email });
   } else {
-    res.status(401).json({ message: "Invalid password" });
+    return res.status(401).json({ message: "Invalid password" });
   }
 });
 
 // Add Learner
 app.post("/api/add-learner", (req, res) => {
-  const { issuerEmail, learnerName, learnerEmail, skill, issueDate, description } = req.body;
-  if (!issuerEmail || !learnerName || !learnerEmail || !skill || !issueDate || !description) {
-    return res.status(400).json({ message: "All fields are required" });
+  const { name, email, phone, completionDate, skill, skillDescription } = req.body;
+  const issuerEmail = 'poop@gmail.com'
+  console.log(!name || !email || !phone || !completionDate || !skill || !skillDescription);
+  if (!name || !email || !phone || !completionDate || !skill || !skillDescription) {
+    return res.status(400).json({ message: "All fields required" });
   }
 
   const issuers = loadIssuers();
+  console.log(1)
   const issuer = issuers.find((i) => i.email === issuerEmail);
-  if (!issuer) return res.status(400).json({ message: "Issuer email not found" });
+  console.log(2)
+  if (!issuer) return res.status(404).json({ message: "Issuer email not found" });
+  console.log(3)
 
-  const dataString = `${learnerName}${learnerEmail}${skill}${issueDate}${description}`;
-  const credHash = createHash(dataString);
+  const learnerHash = createHash(name + email + phone + completionDate + skill);
+  console.log(4)
 
-  issuer.learner_profiles.push({
-    learner_name: learnerName,
-    learner_email: learnerEmail,
-    skill,
-    issueDate,
-    description,
-    cred_hash: credHash,
-  });
+  const newLearner = { name, email, phone, completionDate, skill, skillDescription, hash: learnerHash };
+  console.log(5)
 
+  issuer.learners.push(newLearner);
+  console.log(6)
   saveIssuers(issuers);
-  res.json({ message: "Learner added", credHash });
+
+  res.json({ message: "Learner added successfully", learner: newLearner });
 });
 
-// -------------------- Start Server --------------------
-app.listen(PORT, HOST, () => console.log(`✅ Server running at http://${HOST}:${PORT}`));
+// Get Learners for issuer
+app.get("/api/learners", (req, res) => {
+  const issuerEmail = req.query.issuerEmail;
+  if (!issuerEmail) return res.status(400).json({ message: "issuerEmail query required" });
+
+  const issuers = loadIssuers();
+  const issuer = issuers.find((i) => i.email === issuerEmail);
+  if (!issuer) return res.status(404).json({ message: "Issuer not found" });
+
+  res.json(issuer.learners || []);
+});
+
+// Issue Credential
+app.post("/issue", upload.single("file"), async (req, res) => {
+  try {
+    const fileBuffer = req.file ? fs.readFileSync(req.file.path) : null;
+    const hash = crypto
+      .createHash("sha256")
+      .update(req.body.learner + (fileBuffer || "") + Date.now())
+      .digest("hex");
+
+    const credential = {
+      learner: req.body.learner,
+      title: req.body.title || "Default Credential",
+      hash,
+    };
+
+    const block = addBlock(credential);
+    res.json({ status: "success", credentialHash: block.credential.hash });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error issuing credential");
+  }
+});
+
+// Verify Credential
+app.get("/verify/:hash", (req, res) => {
+  const result = verifyCredential(req.params.hash);
+  if (result) {
+    res.json({ valid: true, block: result });
+  } else {
+    res.json({ valid: false });
+  }
+});
+
+app.get("/", (req, res) => {
+  res.send("Credential backend is running!");
+});
+
+app.listen(PORT, HOST, () => {
+  console.log(`Server running at http://${HOST}:${PORT}`);
+});
