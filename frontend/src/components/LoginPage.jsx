@@ -8,7 +8,7 @@ function CredLedgerLogin() {
     document.body.style.margin = '0';
     document.body.style.padding = '0';
     document.body.style.boxSizing = 'border-box';
-    document.body.style.background = 'linear-gradient(90deg, #00ffff, #8a2be2)';
+    document.body.style.background = 'linear-gradient(135deg, #1B143F 0%, #2D1B4F 40%, #4B2C82 100%)';
     document.body.style.height = '100vh';
     document.body.style.overflow = 'hidden';
     document.body.style.fontFamily = 'Segoe UI, sans-serif';
