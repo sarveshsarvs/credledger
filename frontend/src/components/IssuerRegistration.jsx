@@ -8,6 +8,8 @@ function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [userType, setUserType] = useState("issuer");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -75,7 +77,7 @@ function RegisterPage() {
             <span style={styles.shield}>🛡️</span>
           </div>
         </div>
-        <h2 style={styles.title}>New User</h2>
+        <h2 style={styles.title}>Register</h2>
 
         <form style={styles.form}>
           <input
@@ -94,22 +96,40 @@ function RegisterPage() {
             style={styles.input}
             required
           />
-          <input
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={styles.input}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Confirm password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            style={styles.input}
-            required
-          />
+
+          <div style={styles.passwordWrapper}>
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={styles.input}
+              required
+            />
+            <span
+              style={styles.eyeIcon}
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              {showPassword ? "🙈" : "👁️"}
+            </span>
+          </div>
+
+          <div style={styles.passwordWrapper}>
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Confirm password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              style={styles.input}
+              required
+            />
+            <span
+              style={styles.eyeIcon}
+              onClick={() => setShowConfirmPassword((prev) => !prev)}
+            >
+              {showConfirmPassword ? "🙈" : "👁️"}
+            </span>
+          </div>
 
           <button
             onClick={handleRegister}
@@ -190,6 +210,19 @@ const styles = {
     fontSize: "14px",
     outline: "none",
     transition: "box-shadow 0.3s ease, border-color 0.3s ease",
+    width: "100%",
+  },
+  passwordWrapper: {
+    position: "relative",
+  },
+  eyeIcon: {
+    position: "absolute",
+    right: "10px",
+    top: "50%",
+    transform: "translateY(-50%)",
+    cursor: "pointer",
+    fontSize: "18px",
+    color: "#ccc",
   },
   loginButton: {
     padding: "12px",
