@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // <-- import Link
+import { Link, useNavigate } from 'react-router-dom'; // ✅ useNavigate
 
 function CredLedgerLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userType, setUserType] = useState('');
   const [hashValue, setHashValue] = useState('');
+
+  const navigate = useNavigate(); // ✅ get navigate function
 
   useEffect(() => {
     document.body.style.margin = '0';
@@ -32,7 +34,7 @@ function CredLedgerLogin() {
     e.preventDefault();
     const payload = userType === 'verifier'
       ? { role: userType, hash: hashValue }
-      : { email, password, role: userType }; // ✅ fixed to send email
+      : { email, password, role: userType }; // ✅ login via email
 
     const res = await fetch("http://localhost:3000/api/login", {
       method: "POST",
@@ -41,7 +43,13 @@ function CredLedgerLogin() {
     });
 
     const data = await res.json();
-    alert(res.ok ? "✅ " + data.message : "❌ " + data.message);
+
+    if (res.ok) {
+      // ✅ redirect to dashboard on success
+      navigate('/dashboard');
+    } else {
+      alert("❌ " + data.message);
+    }
   };
 
   return (
@@ -114,7 +122,6 @@ function CredLedgerLogin() {
           {userType !== 'verifier' && (
             <div style={styles.signUpRow}>
               <span style={styles.signUpText}>Don’t have an account?</span>
-              {/* React Router Link */}
               <Link to="/register" style={styles.signUpLink}>
                 Sign up
               </Link>
@@ -125,6 +132,8 @@ function CredLedgerLogin() {
     </div>
   );
 }
+
+
 
 const styles = {
   wrapper: {
