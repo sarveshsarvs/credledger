@@ -1,6 +1,12 @@
+/**
+ * CredLedgerLogin Component
+ * © 2025 Draven. All rights reserved.
+ * This code is licensed for personal or commercial use by the author.
+ * Unauthorized copying, modification, or distribution is prohibited.
+ */
+
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from 'react-router-dom';
 
 function CredLedgerLogin() {
   const [email, setEmail] = useState('');
@@ -50,13 +56,14 @@ function CredLedgerLogin() {
 
     const data = await res.json();
     if (res.ok) {
-      // ✅ redirect to dashboard on success
       navigate('/dashboard');
     } else {
       alert("❌ " + data.message);
     }
   };
 
+<<<<<<< HEAD
+=======
   const handleVerify = async () => {
     if (!hashValue) {
       return alert("Please enter a hash value");
@@ -72,6 +79,7 @@ function CredLedgerLogin() {
     }
   };
   
+>>>>>>> 89c3c399a72b43fe64850e6f6fd6a2129a3191e5
   return (
     <div style={styles.wrapper}>
       <div style={styles.container}>
@@ -148,21 +156,35 @@ function CredLedgerLogin() {
           )}
         </form>
       </div>
+
+      <div style={styles.footer}>
+        © 2025 Code Blooded. All rights reserved.
+      </div>
     </div>
   );
 }
 
-
-
 const styles = {
   wrapper: {
     display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     height: '100vh',
     color: '#fff',
+    position: 'relative',
   },
-  select: { padding: "10px", borderRadius: "6px", border: "1px solid #6C4AB6", backgroundColor: "#1e1e2e", color: "#fff", fontSize: "14px", outline: "none", width: "100%", cursor: "pointer" },
+  select: {
+    padding: "10px",
+    borderRadius: "6px",
+    border: "1px solid #6C4AB6",
+    backgroundColor: "#1e1e2e",
+    color: "#fff",
+    fontSize: "14px",
+    outline: "none",
+    width: "100%",
+    cursor: "pointer"
+  },
   container: {
     backgroundColor: 'rgba(45, 27, 79, 0.95)',
     padding: '30px',
@@ -227,6 +249,12 @@ const styles = {
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     textDecoration: 'underline',
+  },
+  footer: {
+    position: 'absolute',
+    bottom: '10px',
+    fontSize: '12px',
+    color: '#D6C6F2',
   },
 };
 
