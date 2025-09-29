@@ -4,14 +4,12 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const filePath = "blockchain.json";
+const filePath = "./database/blockchain.json";
 const ALGO = "aes-256-cbc";
 
-// Load secret key & IV from .env
-const SECRET_KEY = Buffer.from(process.env.SECRET_KEY, "base64"); // 32 bytes
-const IV = Buffer.from(process.env.IV, "base64"); // 16 bytes
+const SECRET_KEY = Buffer.from(process.env.SECRET_KEY, "base64");
+const IV = Buffer.from(process.env.IV, "base64");
 
-// --- AES encryption/decryption ---
 function encryptBlock(block) {
   const cipher = crypto.createCipheriv(ALGO, SECRET_KEY, IV);
   let encrypted = cipher.update(JSON.stringify(block), "utf8", "hex");
@@ -26,7 +24,6 @@ function decryptBlock(encrypted) {
   return JSON.parse(decrypted);
 }
 
-// --- Blockchain core functions ---
 export function loadChain() {
   if (!fs.existsSync(filePath)) return [];
   const raw = JSON.parse(fs.readFileSync(filePath));
