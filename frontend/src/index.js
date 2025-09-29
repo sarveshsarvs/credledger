@@ -1,23 +1,20 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import LoginPage from "./components/LoginPage";
-import RegisterPage from "./components/IssuerRegistration";
+import Login from "./Login";
+import IssuerRegistration from "./components/IssuerRegistration";
 import Dashboard from "./components/Dashboard";
+import VerificationResult from "./components/VerificationResult";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <BrowserRouter>
     <Routes>
-      {/* Default route */}
-      <Route path="/" element={<LoginPage />} />
-
-      {/* Register route */}
-      <Route path="/register" element={<RegisterPage />} />
-
-      {/* Dashboard (includes Add Learner inside it) */}
+      <Route path="/" element={<Login />} />
+      <Route path="/register" element={<IssuerRegistration />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/verification-result" element={<VerificationResult />} />
     </Routes>
   </BrowserRouter>
 );

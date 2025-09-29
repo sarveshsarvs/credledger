@@ -166,7 +166,6 @@ app.post("/issue", upload.single("file"), async (req, res) => {
   }
 });
 
-// Verify Credential
 app.get("/verify/:hash", (req, res) => {
   const result = verifyCredential(req.params.hash);
   if (result) {

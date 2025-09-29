@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { UserPlus, Users, GraduationCap } from "lucide-react";
 
+<<<<<<< HEAD
 const Dashboard = () => {
   const [view, setView] = useState("home");
   const [learners, setLearners] = useState([]);
@@ -12,6 +13,17 @@ const Dashboard = () => {
     skill: "",
     skillDescription: "",
   });
+=======
+const initialLearners = [
+  { name: "Alice", id: "101", phone: "9998887777", completionDate: "2025-09-10" },
+  { name: "Bob", id: "102", phone: "8887776666", completionDate: "2025-09-15" },
+];
+
+const Dashboard = () => {
+  const [view, setView] = useState("home");
+  const [learners, setLearners] = useState(initialLearners);
+  const [form, setForm] = useState({ name: "", id: "", phone: "", completionDate: "" });
+>>>>>>> d8a564f9b9e9a0143382b9076a646dbe54b36a55
   const [hovered, setHovered] = useState(null);
 
   const issuerEmail = localStorage.getItem("issuerEmail");
@@ -281,11 +293,14 @@ const styles = {
     padding: "20px",
     borderRadius: "10px",
     boxShadow: "0 0 15px rgba(0,0,0,0.3)",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   input: {
-    width: "100%",
-    padding: "10px",
-    margin: "10px 0",
+    width: "80%",
+    padding: "8px",
+    margin: "8px 0",
     borderRadius: "6px",
     border: "1px solid #6C4AB6",
     backgroundColor: "#1e1e2e",
@@ -294,8 +309,8 @@ const styles = {
   },
   addBtn: {
     marginTop: "10px",
-    padding: "12px",
-    width: "100%",
+    padding: "10px",
+    width: "80%",
     background: "linear-gradient(90deg, #00ffff, #8a2be2)",
     border: "none",
     borderRadius: "6px",

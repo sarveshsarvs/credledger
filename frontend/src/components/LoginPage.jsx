@@ -1,3 +1,10 @@
+/**
+ * CredLedgerLogin Component
+ * © 2025 Draven. All rights reserved.
+ * This code is licensed for personal or commercial use by the author.
+ * Unauthorized copying, modification, or distribution is prohibited.
+ */
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -34,9 +41,30 @@ function CredLedgerLogin() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const payload = userType === 'verifier'
-      ? { role: userType, hash: hashValue }
-      : { email, password, role: userType };
+
+    if (userType === "verifier") {
+      return handleVerify();
+    }
+
+    const payload =  { email, password, role: userType };
+    const res = await fetch("http://localhost:3000/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      navigate('/dashboard');
+    } else {
+      alert("❌ " + data.message);
+    }
+  };
+
+  const handleVerify = async () => {
+    if (!hashValue) {
+      return alert("Please enter a hash value");
+    }
 
     try {
       const res = await fetch("http://localhost:3000/api/login", {
@@ -63,7 +91,6 @@ function CredLedgerLogin() {
       alert("❌ Error connecting to server");
     }
   };
-
 
   return (
     <div style={styles.wrapper}>
@@ -141,12 +168,35 @@ function CredLedgerLogin() {
           )}
         </form>
       </div>
+
+      <div style={styles.footer}>
+        © 2025 Code Blooded. All rights reserved.
+      </div>
     </div>
   );
 }
 
 const styles = {
-  wrapper: { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: '#fff' },
+  wrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    color: '#fff',
+    position: 'relative',
+  },
+  select: {
+    padding: "10px",
+    borderRadius: "6px",
+    border: "1px solid #6C4AB6",
+    backgroundColor: "#1e1e2e",
+    color: "#fff",
+    fontSize: "14px",
+    outline: "none",
+    width: "100%",
+    cursor: "pointer"
+  },
   container: {
     backgroundColor: 'rgba(45, 27, 79, 0.95)',
     padding: '30px',
@@ -168,7 +218,7 @@ const styles = {
   shield: { fontSize: '24px', color: '#2D1B4F' },
   title: { fontSize: '24px', fontWeight: 'bold', background: 'linear-gradient(90deg, #00ffff, #8a2be2)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '30px' },
   form: { display: 'flex', flexDirection: 'column', gap: '15px' },
-  select: {
+  input: {
     padding: '10px',
     borderRadius: '6px',
     border: '1px solid #6C4AB6',
@@ -177,18 +227,40 @@ const styles = {
     fontSize: '14px',
     outline: 'none',
     transition: 'box-shadow 0.3s ease, border-color 0.3s ease',
-    appearance: 'none',
-    backgroundImage: 'linear-gradient(90deg, #00ffff, #8a2be2)',
+  },
+  loginButton: {
+    padding: '12px',
+    background: 'linear-gradient(90deg, #00ffff, #8a2be2)',
+    color: '#fff',
+    fontWeight: 'bold',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    boxShadow: '0 0 10px #8a2be2',
+    transition: 'all 0.3s ease',
+    fontSize: '16px',
+  },
+  signUpRow: {
+    marginTop: '20px',
+    fontSize: '13px',
+    color: '#D6C6F2',
+  },
+  signUpText: { marginRight: '6px' },
+  signUpLink: {
+    fontWeight: 'bold',
+    fontSize: '13px',
+    cursor: 'pointer',
+    backgroundImage: 'linear-gradient(90deg, #00ffff, #2b5fe2ff)',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
-    fontWeight: 'bold',
-    textAlignLast: 'center',
+    textDecoration: 'underline',
   },
-  input: { padding: '10px', borderRadius: '6px', border: '1px solid #6C4AB6', backgroundColor: '#1e1e2e', color: '#fff', fontSize: '14px', outline: 'none', transition: 'box-shadow 0.3s ease, border-color 0.3s ease' },
-  loginButton: { padding: '12px', background: 'linear-gradient(90deg, #00ffff, #8a2be2)', color: '#fff', fontWeight: 'bold', border: 'none', borderRadius: '6px', cursor: 'pointer', boxShadow: '0 0 10px #8a2be2', transition: 'all 0.3s ease', fontSize: '16px' },
-  signUpRow: { marginTop: '20px', fontSize: '13px', color: '#D6C6F2' },
-  signUpText: { marginRight: '6px' },
-  signUpLink: { fontWeight: 'bold', fontSize: '13px', cursor: 'pointer', backgroundImage: 'linear-gradient(90deg, #00ffff, #8a2be2)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', textDecoration: 'underline' },
+  footer: {
+    position: 'absolute',
+    bottom: '10px',
+    fontSize: '12px',
+    color: '#D6C6F2',
+  },
 };
 
 export default CredLedgerLogin;
