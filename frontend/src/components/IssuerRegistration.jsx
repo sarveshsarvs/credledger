@@ -8,8 +8,6 @@ function IssuerRegistration() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [institution, setInstitution] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -108,7 +106,7 @@ function IssuerRegistration() {
             <option value="SRM college of engineering">SRM college of engineering</option>
             <option value="Ramakrishna college of engineering">Ramakrishna college of engineering</option>
             <option value="Vellore institute of technology">Vellore institute of technology</option>
-            <option value="National institute of engineering">National institute of engineering</option>
+            <option value="National institute of technology">National institute of technology</option>
           </select>
 
           <input
@@ -129,34 +127,22 @@ function IssuerRegistration() {
           />
 
           <input
-            type={showPassword ? "text" : "password"}
+            type="password"
             placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             style={styles.input}
             required
           />
-          <span
-            style={styles.eyeIcon}
-            onClick={() => setShowPassword(prev => !prev)}
-          >
-            {showPassword ? "🙈" : "👁️"}
-          </span>
 
           <input
-            type={showConfirmPassword ? "text" : "password"}
+            type="password"
             placeholder="Confirm password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             style={styles.input}
             required
           />
-          <span
-            style={styles.eyeIcon}
-            onClick={() => setShowConfirmPassword(prev => !prev)}
-          >
-            {showConfirmPassword ? "🙈" : "👁️"}
-          </span>
 
           <button
             type="submit"
