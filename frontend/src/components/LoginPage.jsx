@@ -41,9 +41,12 @@ function CredLedgerLogin() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const payload = userType === 'verifier'
-      ? { role: userType, hash: hashValue }
-      : { email, password, role: userType };
+
+    if (userType === "verifier") {
+      return handleVerify();
+    }
+
+    const payload =  { email, password, role: userType };
 
     const res = await fetch("http://localhost:3000/api/login", {
       method: "POST",
@@ -52,7 +55,6 @@ function CredLedgerLogin() {
     });
 
     const data = await res.json();
-
     if (res.ok) {
       navigate('/dashboard');
     } else {
@@ -60,6 +62,24 @@ function CredLedgerLogin() {
     }
   };
 
+<<<<<<< HEAD
+=======
+  const handleVerify = async () => {
+    if (!hashValue) {
+      return alert("Please enter a hash value");
+    }
+
+    try {
+      const res = await fetch(`http://localhost:3000/verify/${hashValue}`); 
+      const data = await res.json();
+      navigate("/verification-result", { state: data });
+    } catch (err) {
+      console.error(err);
+      alert("❌ Error verifying credential");
+    }
+  };
+  
+>>>>>>> 89c3c399a72b43fe64850e6f6fd6a2129a3191e5
   return (
     <div style={styles.wrapper}>
       <div style={styles.container}>
@@ -225,7 +245,7 @@ const styles = {
     fontWeight: 'bold',
     fontSize: '13px',
     cursor: 'pointer',
-    backgroundImage: 'linear-gradient(90deg, #00ffff, #8a2be2)',
+    backgroundImage: 'linear-gradient(90deg, #00ffff, #2b5fe2ff)',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     textDecoration: 'underline',
