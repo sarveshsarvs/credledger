@@ -1,78 +1,66 @@
 import React, { useState, useEffect } from 'react';
 
-function LoginPage() {
+function CredLedgerLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
-  const [activeButton, setActiveButton] = useState(null);
 
   useEffect(() => {
     document.body.style.margin = '0';
     document.body.style.padding = '0';
     document.body.style.boxSizing = 'border-box';
-    document.body.style.background = 'linear-gradient(135deg, #2D1B4F, #302b63, #24243e)';
+    document.body.style.background = 'linear-gradient(135deg, #1B143F 0%, #2D1B4F 40%, #4B2C82 100%)';
     document.body.style.height = '100vh';
     document.body.style.overflow = 'hidden';
+    document.body.style.fontFamily = 'Segoe UI, sans-serif';
+
+    const styleSheet = document.createElement('style');
+    styleSheet.type = 'text/css';
+    styleSheet.innerText = `
+      @keyframes pulse {
+        0% { box-shadow: 0 0 10px #00ffff; }
+        50% { box-shadow: 0 0 20px #00ffff; }
+        100% { box-shadow: 0 0 10px #00ffff; }
+      }
+    `;
+    document.head.appendChild(styleSheet);
   }, []);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setActiveButton("login");
+const handleLogin = async (e) => {
+  e.preventDefault();
+  const res = await fetch("http://localhost:3000/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username: email, password }),
+  });
+  const data = await res.json();
+  alert(res.ok ? "✅ " + data.message : "❌ " + data.message);
+};
 
-    try {
-      const res = await fetch("http://localhost:3000/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: email, password }),
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        alert("✅ " + data.message);
-        if (rememberMe) {
-          localStorage.setItem("user", email);
-        }
-      } else {
-        alert("❌ " + data.message);
-      }
-    } catch (err) {
-      console.error(err);
-      alert("❌ Server error");
-    }
-  };
-
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    setActiveButton("register");
-
-    try {
-      const res = await fetch("http://localhost:3000/api/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: email, password }),
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        alert("✅ " + data.message);
-      } else {
-        alert("❌ " + data.message);
-      }
-    } catch (err) {
-      console.error(err);
-      alert("❌ Server error");
-    }
-  };
+const handleSignUp = async () => {
+  const res = await fetch("http://localhost:3000/api/signup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username: email, password }),
+  });
+  const data = await res.json();
+  alert(res.ok ? "✅ " + data.message : "❌ " + data.message);
+};
 
 
   return (
     <div style={styles.wrapper}>
       <div style={styles.container}>
+        <div style={styles.iconWrapper}>
+          <div style={styles.shieldGlow}>
+            <span style={styles.shield}>🛡️</span>
+          </div>
+        </div>
+        <h2 style={styles.title}>Cred Ledger</h2>
+
         <form style={styles.form}>
-          <h2 style={styles.title}>Issuer Login</h2>
           <input
             type="email"
-            placeholder="Email"
+            placeholder="Enter your email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             style={styles.input}
@@ -80,65 +68,32 @@ function LoginPage() {
           />
           <input
             type="password"
-            placeholder="Password"
+            placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             style={styles.input}
             required
           />
 
-          <div style={styles.options}>
-            <label style={styles.checkboxLabel}>
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-              />
-              <span style={styles.optionText}>Remember me</span>
-            </label>
-            <button type="button" style={styles.forgot}>Forgot Password?</button>
-          </div>
+          <button
+            onClick={handleLogin}
+            style={styles.loginButton}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'scale(1.05)';
+              e.target.style.boxShadow = '0 0 25px #8a2be2';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'scale(1)';
+              e.target.style.boxShadow = styles.loginButton.boxShadow;
+            }}
+          >
+            Login
+          </button>
 
-          <div style={styles.buttonGroup}>
-            <button
-              onClick={handleLogin}
-              style={{
-                ...styles.button,
-                ...(activeButton === 'login' ? styles.activeLogin : styles.login),
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'scale(1.05)';
-                e.target.style.boxShadow = '0 0 25px #6C4AB6';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'scale(1)';
-                e.target.style.boxShadow =
-                  activeButton === 'login'
-                    ? styles.activeLogin.boxShadow
-                    : styles.login.boxShadow;
-              }}
-            >
-              Login
-            </button>
-            <button
-              onClick={handleRegister}
-              style={{
-                ...styles.button,
-                ...(activeButton === 'register' ? styles.activeRegister : styles.register),
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'scale(1.05)';
-                e.target.style.boxShadow = '0 0 25px #BFA2DB';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'scale(1)';
-                e.target.style.boxShadow =
-                  activeButton === 'register'
-                    ? styles.activeRegister.boxShadow
-                    : styles.register.boxShadow;
-              }}
-            >
-              Register
+          <div style={styles.signUpRow}>
+            <span style={styles.signUpText}>Don’t have an account?</span>
+            <button onClick={handleSignUp} style={styles.signUpLink}>
+              Sign up
             </button>
           </div>
         </form>
@@ -153,95 +108,87 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     height: '100vh',
-    fontFamily: 'Segoe UI, sans-serif',
     color: '#fff',
   },
   container: {
-    backgroundColor: 'rgba(45, 27, 79, 0.9)',
+    backgroundColor: 'rgba(45, 27, 79, 0.95)',
     padding: '30px',
-    borderRadius: '12px',
-    width: '360px',
-    boxShadow: '0 0 25px rgba(191, 162, 219, 0.2)',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
+    borderRadius: '16px',
+    width: '320px',
+    boxShadow: '0 0 30px #8a2be2',
+    animation: 'pulse 3s infinite',
+    textAlign: 'center',
+  },
+  iconWrapper: {
+    marginBottom: '10px',
+  },
+  shieldGlow: {
+    display: 'inline-block',
+    padding: '10px',
+    borderRadius: '50%',
+    backgroundColor: '#00ffff',
+    boxShadow: '0 0 20px #00ffff',
+    animation: 'pulse 2s infinite',
+  },
+  shield: {
+    fontSize: '24px',
+    color: '#2D1B4F',
+  },
+  title: {
+    fontSize: '24px',
+    fontWeight: 'bold',
+    background: 'linear-gradient(90deg, #00ffff, #8a2be2)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    marginBottom: '30px',
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
-  },
-  title: {
-    textAlign: 'center',
-    marginBottom: '25px',
-    fontSize: '26px',
-    fontWeight: '600',
-    color: '#FFFFFF',
+    gap: '15px',
   },
   input: {
-    width: '100%',
-    padding: '12px',
-    marginBottom: '18px',
+    padding: '10px',
     borderRadius: '6px',
     border: '1px solid #6C4AB6',
     backgroundColor: '#1e1e2e',
     color: '#fff',
-    fontSize: '15px',
+    fontSize: '14px',
     outline: 'none',
+    transition: 'box-shadow 0.3s ease, border-color 0.3s ease',
   },
-  options: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '20px',
-    fontSize: '14px',
-  },
-  checkboxLabel: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-  },
-  optionText: {
-    color: '#D6C6F2',
-  },
-  forgot: {
-    background: 'none',
-    border: 'none',
-    color: '#D6C6F2',
-    cursor: 'pointer',
-    textDecoration: 'underline',
-    fontSize: '14px',
-  },
-  buttonGroup: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-  button: {
-    flex: 1,
-    padding: '12px 0',
-    fontSize: '16px',
+  loginButton: {
+    padding: '12px',
+    background: 'linear-gradient(90deg, #00ffff, #8a2be2)',
+    color: '#fff',
+    fontWeight: 'bold',
     border: 'none',
     borderRadius: '6px',
     cursor: 'pointer',
-    margin: '0 5px',
+    boxShadow: '0 0 10px #8a2be2',
     transition: 'all 0.3s ease',
-    transform: 'scale(1)',
+    fontSize: '16px',
+  },
+  signUpRow: {
+    marginTop: '20px',
+    fontSize: '13px',
+    color: '#D6C6F2',
+  },
+  signUpText: {
+    marginRight: '6px',
+  },
+  signUpLink: {
+    background: 'none',
+    border: 'none',
     fontWeight: 'bold',
-    color: '#fff',
-  },
-  login: {
-    backgroundColor: '#6C4AB6',
-    boxShadow: '0 0 10px #6C4AB6',
-  },
-  register: {
-    backgroundColor: '#BFA2DB',
-    boxShadow: '0 0 10px #BFA2DB',
-  },
-  activeLogin: {
-    backgroundColor: '#6C4AB6',
-    boxShadow: '0 0 20px #6C4AB6',
-  },
-  activeRegister: {
-    backgroundColor: '#BFA2DB',
-    boxShadow: '0 0 20px #BFA2DB',
+    fontSize: '13px',
+    padding: '0',
+    cursor: 'pointer',
+    backgroundImage: 'linear-gradient(90deg, #00ffff, #8a2be2)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    textDecoration: 'underline',
   },
 };
 
-export default LoginPage;
+export default CredLedgerLogin;
