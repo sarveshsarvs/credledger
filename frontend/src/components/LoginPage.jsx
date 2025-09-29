@@ -30,9 +30,12 @@ function CredLedgerLogin() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const payload = userType === 'verifier'
-      ? { role: userType, hash: hashValue }
-      : { email, password, role: userType }; // ✅ fixed to send email
+
+    if (userType === "verifier") {
+      return handleVerify();
+    }
+
+    const payload =  { email, password, role: userType };
 
     const res = await fetch("http://localhost:3000/api/login", {
       method: "POST",
@@ -42,6 +45,26 @@ function CredLedgerLogin() {
 
     const data = await res.json();
     alert(res.ok ? "✅ " + data.message : "❌ " + data.message);
+  };
+
+  const handleVerify = async () => {
+    if (!hashValue) {
+      return alert("Please enter a hash value");
+    }
+
+    try {
+      const res = await fetch(`http://localhost:3000/verify/${hashValue}`);
+      const data = await res.json();
+
+      if (data.valid) {
+        alert("✅ Credential is valid!\n\n" + JSON.stringify(data.block, null, 2));
+      } else {
+        alert("❌ Credential not found or invalid");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("❌ Error verifying credential");
+    }
   };
 
   return (
