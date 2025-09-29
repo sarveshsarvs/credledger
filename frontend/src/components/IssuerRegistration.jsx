@@ -41,6 +41,14 @@ function IssuerRegistration() {
         -webkit-appearance: none;
         -moz-appearance: none;
         appearance: none;
+        background-color: #1e1e2e;
+        color: #fff;
+        border: 1px solid #6C4AB6;
+        border-radius: 6px;
+        padding: 10px;
+        font-size: 14px;
+        outline: none;
+        cursor: pointer;
         background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
         background-repeat: no-repeat;
         background-position: right 10px center;
@@ -52,30 +60,20 @@ function IssuerRegistration() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-
     if (!name || !email || !password || !confirmPassword || !institution) {
       alert("Please fill all fields!");
       return;
     }
-
     if (password !== confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
-
     try {
       const res = await fetch("http://localhost:3000/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-          role: "issuer",
-          institution,
-        }),
+        body: JSON.stringify({ name, email, password, role: "issuer", institution }),
       });
-
       const data = await res.json();
       if (res.ok) {
         alert("✅ " + data.message);
@@ -98,7 +96,6 @@ function IssuerRegistration() {
           </div>
         </div>
         <h2 style={styles.title}>Issuer Registration</h2>
-
         <form style={styles.form} onSubmit={handleRegister}>
           <select
             value={institution}
@@ -220,7 +217,15 @@ const styles = {
   loginButton: { padding: "12px", background: "linear-gradient(90deg, #00ffff, #8a2be2)", color: "#fff", fontWeight: "bold", border: "none", borderRadius: "6px", cursor: "pointer", boxShadow: "0 0 10px #8a2be2", transition: "all 0.3s ease", fontSize: "16px" },
   signInRow: { marginTop: "20px", fontSize: "13px", color: "#D6C6F2" },
   signInText: { marginRight: "6px" },
-  signInLink: { fontWeight: "bold", fontSize: "13px", cursor: "pointer", textDecoration: "underline" },
+  signInLink: {
+    fontWeight: "bold",
+    fontSize: "13px",
+    cursor: "pointer",
+    textDecoration: "underline",
+    backgroundImage: "linear-gradient(90deg, #00ffff, #8a2be2)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+  },
 };
 
 export default IssuerRegistration;
