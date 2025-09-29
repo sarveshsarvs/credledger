@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // <-- import Link
+import { Link } from 'react-router-dom';
 
 function CredLedgerLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userType, setUserType] = useState('');
+  const [userType, setUserType] = useState('verifier');
   const [hashValue, setHashValue] = useState('');
 
   useEffect(() => {
@@ -61,9 +61,8 @@ function CredLedgerLogin() {
             style={styles.select}
             required
           >
-            <option value="">-- Select User Type --</option>
-            <option value="issuer">Issuer</option>
             <option value="verifier">Verifier</option>
+            <option value="issuer">Issuer</option>
           </select>
 
           {userType === 'verifier' ? (
