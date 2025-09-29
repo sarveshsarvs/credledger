@@ -33,11 +33,14 @@ function CredLedgerLogin() {
     document.head.appendChild(styleSheet);
   }, []);
 
-  const handleLogin = async (e) => {
+   const handleLogin = async (e) => {
     e.preventDefault();
-    const payload = userType === 'verifier'
-      ? { role: userType, hash: hashValue }
-      : { email, password, role: userType };
+
+    if (userType === "verifier") {
+      return handleVerify();
+    }
+
+    const payload =  { email, password, role: userType };
 
     const res = await fetch("http://localhost:3000/api/login", {
       method: "POST",
@@ -46,13 +49,7 @@ function CredLedgerLogin() {
     });
 
     const data = await res.json();
-
-    if (res.ok) {
-      // ✅ redirect to dashboard on success
-      navigate('/dashboard');
-    } else {
-      alert("❌ " + data.message);
-    }
+    alert(res.ok ? "✅ " + data.message : "❌ " + data.message);
   };
 
   const handleVerify = async () => {
@@ -69,8 +66,7 @@ function CredLedgerLogin() {
       alert("❌ Error verifying credential");
     }
   };
-
-
+  
   return (
     <div style={styles.wrapper}>
       <div style={styles.container}>
@@ -190,22 +186,6 @@ const styles = {
     marginBottom: '30px',
   },
   form: { display: 'flex', flexDirection: 'column', gap: '15px' },
-  /*elect: {
-    padding: '10px',
-    borderRadius: '6px',
-    border: '1px solid #6C4AB6',
-    backgroundColor: '#1e1e2e',
-    color: '#fff',
-    fontSize: '14px',
-    outline: 'none',
-    transition: 'box-shadow 0.3s ease, border-color 0.3s ease',
-    appearance: 'none',
-    backgroundImage: 'linear-gradient(90deg, #00ffff, #8a2be2)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    fontWeight: 'bold',
-    textAlignLast: 'center',
-  },*/
   input: {
     padding: '10px',
     borderRadius: '6px',
