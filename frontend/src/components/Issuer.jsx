@@ -11,7 +11,7 @@ export default function Issuer() {
     form.append("file", file);
     form.append("learner", learner);
 
-    const res = await axios.post("http://localhost:3000/issue", form);
+    const res = await axios.post("http://192.168.137.63:3000/issue", form);
     alert("Credential Issued! Hash: " + res.data.credentialHash);
   };
 

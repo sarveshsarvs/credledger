@@ -8,7 +8,7 @@ export default function Verifier() {
   const handleVerify = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.get(`http://localhost:3000/verify/${hash}`);
+      const res = await axios.get(`http://192.168.137.63:3000/verify/${hash}`);
       setResult(res.data);
     } catch (err) {
       console.error(err);

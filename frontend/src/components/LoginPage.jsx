@@ -25,7 +25,7 @@ function CredLedgerLogin() {
     document.head.appendChild(styleSheet);
   }, []);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     console.log('Login:', { email, password });
   };
@@ -33,6 +33,7 @@ function CredLedgerLogin() {
   const handleSignUp = () => {
     console.log('Sign Up clicked');
   };
+
 
   return (
     <div style={styles.wrapper}>
