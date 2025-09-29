@@ -8,7 +8,7 @@ function CredLedgerLogin() {
     document.body.style.margin = '0';
     document.body.style.padding = '0';
     document.body.style.boxSizing = 'border-box';
-    document.body.style.background = 'linear-gradient(90deg, #00ffff, #8a2be2)';
+    document.body.style.background = 'linear-gradient(135deg, #1B143F 0%, #2D1B4F 40%, #4B2C82 100%)';
     document.body.style.height = '100vh';
     document.body.style.overflow = 'hidden';
     document.body.style.fontFamily = 'Segoe UI, sans-serif';
@@ -25,14 +25,27 @@ function CredLedgerLogin() {
     document.head.appendChild(styleSheet);
   }, []);
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    console.log('Login:', { email, password });
-  };
+const handleLogin = async (e) => {
+  e.preventDefault();
+  const res = await fetch("http://localhost:3000/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username: email, password }),
+  });
+  const data = await res.json();
+  alert(res.ok ? "✅ " + data.message : "❌ " + data.message);
+};
 
-  const handleSignUp = () => {
-    console.log('Sign Up clicked');
-  };
+const handleSignUp = async () => {
+  const res = await fetch("http://localhost:3000/api/signup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username: email, password }),
+  });
+  const data = await res.json();
+  alert(res.ok ? "✅ " + data.message : "❌ " + data.message);
+};
+
 
   return (
     <div style={styles.wrapper}>

@@ -4,6 +4,7 @@ import multer from "multer";
 import crypto from "crypto";
 import cors from "cors";
 import fs from "fs";
+import path from "path";
 import { addBlock, verifyCredential } from "./utils/blockchain.js"; // blockchain utils
 
 const PORT = 3000;
@@ -11,15 +12,24 @@ const HOST = "0.0.0.0";
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
+
 app.use(cors());
 app.use(express.json());
 
-const USERS_FILE = "database/authentication.json";
+// -------------------- Paths --------------------
+const DB_DIR = path.join("database");
+const USERS_FILE = path.join(DB_DIR, "authentication.json");
 
-// ---------- Helpers ----------
+// Ensure database folder exists
+if (!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR, { recursive: true });
+
+// Ensure authentication.json exists
+if (!fs.existsSync(USERS_FILE)) fs.writeFileSync(USERS_FILE, "[]", "utf8");
+
+// -------------------- Helpers --------------------
 function loadUsers() {
-  if (!fs.existsSync(USERS_FILE)) return [];
-  return JSON.parse(fs.readFileSync(USERS_FILE, "utf8"));
+  const raw = fs.readFileSync(USERS_FILE, "utf8");
+  return JSON.parse(raw);
 }
 
 function saveUsers(users) {
@@ -30,7 +40,7 @@ function createHash(password, timestamp) {
   return crypto.createHash("sha256").update(password + timestamp).digest("hex");
 }
 
-// ---------- Authentication ----------
+// -------------------- Authentication --------------------
 
 // Signup
 app.post("/api/signup", (req, res) => {
@@ -74,7 +84,7 @@ app.post("/api/login", (req, res) => {
   }
 });
 
-// ---------- Blockchain Routes ----------
+// -------------------- Blockchain Routes --------------------
 
 // Issue credential
 app.post("/issue", upload.single("file"), async (req, res) => {
