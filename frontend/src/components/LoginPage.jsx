@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 function CredLedgerLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userType, setUserType] = useState('verifier');
   const [hashValue, setHashValue] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.body.style.margin = '0';
@@ -53,19 +55,15 @@ function CredLedgerLogin() {
     }
 
     try {
-      const res = await fetch(`http://localhost:3000/verify/${hashValue}`);
+      const res = await fetch(`http://localhost:3000/verify/${hashValue}`); 
       const data = await res.json();
-
-      if (data.valid) {
-        alert("✅ Credential is valid!\n\n" + JSON.stringify(data.block, null, 2));
-      } else {
-        alert("❌ Credential not found or invalid");
-      }
+      navigate("/verification-result", { state: data });
     } catch (err) {
       console.error(err);
       alert("❌ Error verifying credential");
     }
   };
+
 
   return (
     <div style={styles.wrapper}>
