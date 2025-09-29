@@ -147,7 +147,7 @@ const styles = {
   wrapper: { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: '#fff' },
   container: {
     backgroundColor: 'rgba(45, 27, 79, 0.95)',
-    padding: '40px',
+    padding: '30px',
     borderRadius: '16px',
     width: '360px',
     boxShadow: '0 0 30px #8a2be2',
