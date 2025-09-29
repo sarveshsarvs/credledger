@@ -4,7 +4,7 @@ import multer from "multer";
 import crypto from "crypto";
 import cors from "cors";
 import fs from "fs";
-import { addBlock, verifyCredential } from "./utils/blockchain.js"; // blockchain utils
+import { addBlock, verifyCredential } from "./blockchain.js";
 
 const PORT = 3000;
 const HOST = "0.0.0.0";
