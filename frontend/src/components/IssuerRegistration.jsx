@@ -14,7 +14,10 @@ function RegisterPage() {
     document.body.style.margin = "0";
     document.body.style.padding = "0";
     document.body.style.boxSizing = "border-box";
-    document.body.style.background = "linear-gradient(135deg, #1B143F 0%, #2D1B4F 40%, #4B2C82 100%)";
+    document.body.style.background = `
+      linear-gradient(135deg, rgba(27, 20, 63, 0.85) 0%, rgba(45, 27, 79, 0.85) 40%, rgba(75, 44, 130, 0.85) 100%),
+      url('/images/bg_image.jpg') no-repeat center center / cover
+    `;
     document.body.style.height = "100vh";
     document.body.style.overflow = "hidden";
     document.body.style.fontFamily = "Segoe UI, sans-serif";

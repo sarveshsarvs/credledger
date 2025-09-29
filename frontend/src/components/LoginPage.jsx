@@ -4,17 +4,20 @@ import { Link } from 'react-router-dom';
 function CredLedgerLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userType, setUserType] = useState('');
+  const [userType, setUserType] = useState('issuer');
   const [hashValue, setHashValue] = useState('');
 
   useEffect(() => {
     document.body.style.margin = '0';
     document.body.style.padding = '0';
     document.body.style.boxSizing = 'border-box';
-    document.body.style.background = 'linear-gradient(135deg, #1B143F 0%, #2D1B4F 40%, #4B2C82 100%)';
     document.body.style.height = '100vh';
     document.body.style.overflow = 'hidden';
     document.body.style.fontFamily = 'Segoe UI, sans-serif';
+    document.body.style.background = `
+      linear-gradient(rgba(27, 20, 63, 0.85), rgba(75, 44, 130, 0.85)),
+      url('/images/bg_image.jpg') center center / cover no-repeat
+    `;
 
     const styleSheet = document.createElement('style');
     styleSheet.type = 'text/css';
@@ -30,9 +33,7 @@ function CredLedgerLogin() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (!userType) return alert("❌ Please select a user type.");
-
-    const payload = userType === 'Evaluator'
+    const payload = userType === 'verifier'
       ? { role: userType, hash: hashValue }
       : { email, password, role: userType };
 
@@ -63,14 +64,11 @@ function CredLedgerLogin() {
             style={styles.select}
             required
           >
-            <option value="">-- Select User Type --</option>
-            <option value="Admin">Admin</option>
-            <option value="Coordinator">Coordinator</option>
-            <option value="Evaluator">Evaluator</option>
-            <option value="Team">Team</option>
+            <option value="verifier">Verifier</option>
+            <option value="issuer">Issuer</option>
           </select>
 
-          {userType === 'Evaluator' ? (
+          {userType === 'verifier' ? (
             <input
               type="text"
               placeholder="Enter hash value"
@@ -79,7 +77,7 @@ function CredLedgerLogin() {
               style={styles.input}
               required
             />
-          ) : userType ? (
+          ) : (
             <>
               <input
                 type="email"
@@ -98,7 +96,7 @@ function CredLedgerLogin() {
                 required
               />
             </>
-          ) : null}
+          )}
 
           <button
             onClick={handleLogin}
@@ -112,10 +110,10 @@ function CredLedgerLogin() {
               e.target.style.boxShadow = styles.loginButton.boxShadow;
             }}
           >
-            {userType === 'Evaluator' ? 'Verify' : 'Login'}
+            {userType === 'verifier' ? 'Verify' : 'Login'}
           </button>
 
-          {userType && userType !== 'Evaluator' && (
+          {userType !== 'verifier' && (
             <div style={styles.signUpRow}>
               <span style={styles.signUpText}>Don’t have an account?</span>
               <Link to="/register" style={styles.signUpLink}>
@@ -175,6 +173,9 @@ const styles = {
     outline: 'none',
     transition: 'box-shadow 0.3s ease, border-color 0.3s ease',
     appearance: 'none',
+    backgroundImage: 'linear-gradient(90deg, #00ffff, #8a2be2)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
     fontWeight: 'bold',
     textAlignLast: 'center',
   },
