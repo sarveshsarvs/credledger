@@ -104,28 +104,18 @@ app.post("/api/login", (req, res) => {
 
 // Add Learner
 app.post("/api/add-learner", (req, res) => {
-  const { name, email, phone, completionDate, skill, skillDescription } = req.body;
-  const issuerEmail = 'poop@gmail.com'
-  console.log(!name || !email || !phone || !completionDate || !skill || !skillDescription);
-  if (!name || !email || !phone || !completionDate || !skill || !skillDescription) {
+  const { name, email, phone, completionDate, skill, skillDescription, issuerEmail } = req.body;
+
+  if ( !issuerEmail || !name || !email || !phone || !completionDate || !skill || !skillDescription) {
     return res.status(400).json({ message: "All fields required" });
   }
 
   const issuers = loadIssuers();
-  console.log(1)
   const issuer = issuers.find((i) => i.email === issuerEmail);
-  console.log(2)
   if (!issuer) return res.status(404).json({ message: "Issuer email not found" });
-  console.log(3)
-
   const learnerHash = createHash(name + email + phone + completionDate + skill);
-  console.log(4)
-
   const newLearner = { name, email, phone, completionDate, skill, skillDescription, hash: learnerHash };
-  console.log(5)
-
   issuer.learners.push(newLearner);
-  console.log(6)
   saveIssuers(issuers);
 
   res.json({ message: "Learner added successfully", learner: newLearner });
@@ -166,6 +156,7 @@ app.post("/issue", upload.single("file"), async (req, res) => {
   }
 });
 
+// Verify Credential
 app.get("/verify/:hash", (req, res) => {
   const result = verifyCredential(req.params.hash);
   if (result) {

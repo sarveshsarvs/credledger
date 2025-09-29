@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { UserPlus, Users, GraduationCap } from "lucide-react";
+import { useLocation, Link } from "react-router-dom";
 
-<<<<<<< HEAD
 const Dashboard = () => {
   const [view, setView] = useState("home");
   const [learners, setLearners] = useState([]);
@@ -13,22 +13,11 @@ const Dashboard = () => {
     skill: "",
     skillDescription: "",
   });
-=======
-const initialLearners = [
-  { name: "Alice", id: "101", phone: "9998887777", completionDate: "2025-09-10" },
-  { name: "Bob", id: "102", phone: "8887776666", completionDate: "2025-09-15" },
-];
-
-const Dashboard = () => {
-  const [view, setView] = useState("home");
-  const [learners, setLearners] = useState(initialLearners);
-  const [form, setForm] = useState({ name: "", id: "", phone: "", completionDate: "" });
->>>>>>> d8a564f9b9e9a0143382b9076a646dbe54b36a55
   const [hovered, setHovered] = useState(null);
+  const { state } = useLocation();
 
-  const issuerEmail = localStorage.getItem("issuerEmail");
+  const issuerEmail = state ? state.issuerEmail : null
 
-  // Load learners on mount or whenever view switches to 'view'
   useEffect(() => {
     if (!issuerEmail) return;
 
@@ -61,7 +50,7 @@ const Dashboard = () => {
       const res = await fetch("http://localhost:3000/api/add-learner", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form }),
+        body: JSON.stringify({ ...form, issuerEmail }),
       });
 
       const data = await res.json();

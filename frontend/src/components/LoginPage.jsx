@@ -47,6 +47,7 @@ function CredLedgerLogin() {
     }
 
     const payload =  { email, password, role: userType };
+
     const res = await fetch("http://localhost:3000/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -54,8 +55,9 @@ function CredLedgerLogin() {
     });
 
     const data = await res.json();
+
     if (res.ok) {
-      navigate('/dashboard');
+      navigate('/dashboard', { state: data});
     } else {
       alert("❌ " + data.message);
     }
@@ -67,28 +69,12 @@ function CredLedgerLogin() {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
+      const res = await fetch(`http://localhost:3000/verify/${hashValue}`); 
       const data = await res.json();
-
-      if (res.ok) {
-        if (userType === 'issuer') {
-          // Save issuer email for future Add Learner actions
-          localStorage.setItem("issuerEmail", email);
-        }
-        navigate('/dashboard'); // redirect to dashboard
-      } else {
-        alert("❌ " + data.message);
-      }
-
-      
+      navigate("/verification-result", { state: data });
     } catch (err) {
       console.error(err);
-      alert("❌ Error connecting to server");
+      alert("❌ Error verifying credential");
     }
   };
 
