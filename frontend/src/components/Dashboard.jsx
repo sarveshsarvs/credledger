@@ -16,6 +16,7 @@ const Dashboard = () => {
   const [hovered, setHovered] = useState(null);
   const { state } = useLocation();
   const navigate = useNavigate();
+  const [issuer, setIssuer] = useState(null);
 
   const issuerEmail = state ? state.issuerEmail : null
 
@@ -28,6 +29,17 @@ const Dashboard = () => {
         .then((data) => setLearners(data))
         .catch((err) => console.error("Error loading learners:", err));
     }
+
+    if (view === "profile") {
+      fetch("http://localhost:3000/api/issuers")
+        .then((res) => res.json())
+        .then((data) => {
+        const foundIssuer = data.find((i) => i.email === issuerEmail);
+        setIssuer(foundIssuer || null);
+        })
+        .catch((err) => console.error("Error loading issuer profile:", err));
+    }
+
   }, [view, issuerEmail]);
 
   const handleChange = (e) =>
@@ -136,13 +148,23 @@ const Dashboard = () => {
       {/* Main Content */}
       <div style={styles.content}>
         {view === "profile" && (
-          <div style={styles.section}>
-            <h1>Profile</h1>
-            <p>Name:</p>
-            <p>Email:</p>
-            <p>Initituation:</p>
-          </div>
+            <div style={styles.profile}>
+                <h1>Profile</h1>
+                <hr />
+                {issuer ? (
+                <>
+                    <p><strong>Name:</strong> {issuer.name}</p>
+                    <p><strong>Email:</strong> {issuer.email}</p>
+                    <p><strong>Institution:</strong> {issuer.institution}</p>
+                    <p><strong>Role:</strong> {issuer.role}</p>
+                    <p><strong>Total Learners:</strong> {issuer.learners.length}</p>
+                </>
+                ) : (
+                <p>Loading profile...</p>
+                )}
+            </div>
         )}
+
 
         {view === "add" && (
           <div style={styles.section}>
@@ -293,7 +315,7 @@ const styles = {
     borderRadius: "8px",
     cursor: "pointer",
     fontWeight: "bold",
-    background: "linear-gradient(90deg, #ff0000ff, #8a2be2)",
+    background: "linear-gradient(90deg, #ff0000ff, #e2502bff)",
     color: "#fff",
     boxShadow: "0 0 10px rgba(138,43,226,0.35)",
     transition: "transform 0.18s ease, box-shadow 0.18s ease",
@@ -319,6 +341,15 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+  },
+  profile: {
+    display: "flex-start",
+    flexDirection: "column",
+    alignItems: "center",
+    background: "rgba(255,255,255,0.03)",
+    padding: "20px",
+    borderRadius: "10px",
+    boxShadow: "0 0 15px rgba(0,0,0,0.3)",
   },
   input: {
     width: "80%",

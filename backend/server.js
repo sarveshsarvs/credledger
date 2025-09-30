@@ -132,6 +132,11 @@ app.get("/api/learners", (req, res) => {
   res.json(issuer.learners || []);
 });
 
+app.get("/api/issuers", (req, res) => {
+  const issuers = loadIssuers();
+  res.json(issuers || []);
+});
+
 app.get("/verify/:hash", (req, res) => {
   const result = verifyCredential(req.params.hash);
   if (result) {

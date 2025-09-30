@@ -4,6 +4,33 @@
     "email": "s@gmail.com",
     "role": "issuer",
     "institution": "Ramakrishna college of engineering",
-    "learners": []
+    "learners": [
+      {
+        "name": "harino",
+        "email": "radx@gmail.com",
+        "phone": "1234567",
+        "completionDate": "2004-04-03",
+        "skill": "gedvyhsjdf",
+        "skillDescription": "wedftgghnjk",
+        "hash": "d9ed41fdc69a24e272d9704c61e17161afa8607956807c4f7765ae2d0e86d746"
+      }
+    ]
+  },
+  {
+    "name": "radhika",
+    "email": "radx@gmail.com",
+    "role": "issuer",
+    "institution": "Ramakrishna college of engineering",
+    "learners": [
+      {
+        "name": "harino",
+        "email": "radx@gmail.com",
+        "phone": "123456784",
+        "completionDate": "2004-04-03",
+        "skill": "gedvyhsjdf",
+        "skillDescription": "defcnhfhechdfn",
+        "hash": "ae6eee337a0a6bbd0c6b371b883cc63ba5a1d594c0da2ae98dac907cdbcc060d"
+      }
+    ]
   }
 ]
