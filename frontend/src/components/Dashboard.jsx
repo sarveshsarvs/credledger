@@ -195,10 +195,7 @@ const Dashboard = () => {
                   <tr>
                     <th style={styles.th}>Name</th>
                     <th style={styles.th}>Email</th>
-                    <th style={styles.th}>Phone</th>
-                    <th style={styles.th}>Completion Date</th>
-                    <th style={styles.th}>Skill</th>
-                    <th style={styles.th}>Skill Description</th>
+                    <th style={styles.th}>Credential hash</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -206,10 +203,7 @@ const Dashboard = () => {
                     <tr key={i}>
                       <td style={styles.td}>{l.name}</td>
                       <td style={styles.td}>{l.email}</td>
-                      <td style={styles.td}>{l.phone}</td>
-                      <td style={styles.td}>{l.completionDate}</td>
-                      <td style={styles.td}>{l.skill}</td>
-                      <td style={styles.td}>{l.skillDescription}</td>
+                      <td style={styles.td}>{l.hash}</td>
                     </tr>
                   ))}
                 </tbody>

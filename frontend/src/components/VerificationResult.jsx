@@ -24,8 +24,10 @@ function VerificationResult() {
 
         {state.valid && (
           <div style={styles.details}>
-            <p><b>Learner:</b> {state.block.credential.learner}</p>
-            <p><b>Title:</b> {state.block.credential.title}</p>
+            <p><b>Name:</b> {state.block.credential.name}</p>
+            <p><b>Email:</b> {state.block.credential.email}</p>
+            <p><b>Completion Date:</b> {state.block.credential.completionDate}</p>
+            <p><b>Skill:</b> {state.block.credential.skill}</p>
             <p><b>Credential Hash:</b> {state.block.credential.hash}</p>
             <p><b>Block Hash:</b> {state.block.hash}</p>
           </div>

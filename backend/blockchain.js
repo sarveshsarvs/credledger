@@ -48,7 +48,6 @@ export function addBlock(credential) {
   const timestamp = Date.now();
   const previousHash = previousBlock.hash;
   const hash = calculateHash(index, timestamp, credential, previousHash);
-
   const newBlock = { index, timestamp, credential, previousHash, hash };
   chain.push(newBlock);
   saveChain(chain);

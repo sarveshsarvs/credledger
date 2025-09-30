@@ -27,6 +27,7 @@ if (!fs.existsSync(ISSUER_FILE)) fs.writeFileSync(ISSUER_FILE, "[]", "utf8");
 
 // -------------------- Helpers --------------------
 function loadUsers() {
+  if (!fs.existsSync(USERS_FILE)) saveUsers([]);
   return JSON.parse(fs.readFileSync(USERS_FILE, "utf8"));
 }
 
@@ -35,6 +36,7 @@ function saveUsers(users) {
 }
 
 function loadIssuers() {
+  if (!fs.existsSync(ISSUER_FILE)) saveIssuers([]);
   return JSON.parse(fs.readFileSync(ISSUER_FILE, "utf8"));
 }
 
@@ -113,12 +115,12 @@ app.post("/api/add-learner", (req, res) => {
   const issuers = loadIssuers();
   const issuer = issuers.find((i) => i.email === issuerEmail);
   if (!issuer) return res.status(404).json({ message: "Issuer email not found" });
-  const learnerHash = createHash(name + email + phone + completionDate + skill);
-  const newLearner = { name, email, phone, completionDate, skill, skillDescription, hash: learnerHash };
-  issuer.learners.push(newLearner);
+  const learnerHash = createHash(name + email + phone + completionDate + skill + Date.now());
+  const credential = { name, email, phone, completionDate, skill, skillDescription, hash: learnerHash };
+  issuer.learners.push(credential);
+  addBlock(credential);
   saveIssuers(issuers);
-
-  res.json({ message: "Learner added successfully", learner: newLearner });
+  res.json({ message: "Learner added successfully", learner: credential });
 });
 
 // Get Learners for issuer
@@ -133,30 +135,6 @@ app.get("/api/learners", (req, res) => {
   res.json(issuer.learners || []);
 });
 
-// Issue Credential
-app.post("/issue", upload.single("file"), async (req, res) => {
-  try {
-    const fileBuffer = req.file ? fs.readFileSync(req.file.path) : null;
-    const hash = crypto
-      .createHash("sha256")
-      .update(req.body.learner + (fileBuffer || "") + Date.now())
-      .digest("hex");
-
-    const credential = {
-      learner: req.body.learner,
-      title: req.body.title || "Default Credential",
-      hash,
-    };
-
-    const block = addBlock(credential);
-    res.json({ status: "success", credentialHash: block.credential.hash });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Error issuing credential");
-  }
-});
-
-// Verify Credential
 app.get("/verify/:hash", (req, res) => {
   const result = verifyCredential(req.params.hash);
   if (result) {
