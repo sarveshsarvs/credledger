@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { UserPlus, Users, GraduationCap } from "lucide-react";
-import { useLocation, Link } from "react-router-dom";
+import { UserPlus, Users, User } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
-  const [view, setView] = useState("home");
+  const [view, setView] = useState("profile");
   const [learners, setLearners] = useState([]);
   const [form, setForm] = useState({
     name: "",
@@ -15,6 +15,7 @@ const Dashboard = () => {
   });
   const [hovered, setHovered] = useState(null);
   const { state } = useLocation();
+  const navigate = useNavigate();
 
   const issuerEmail = state ? state.issuerEmail : null
 
@@ -81,10 +82,17 @@ const Dashboard = () => {
     <div style={styles.wrapper}>
       {/* Sidebar */}
       <div style={styles.sidebar}>
-        <div style={styles.logo}>
-          <GraduationCap size={32} color="#00ffff" />
-          <h2 style={styles.logoText}>Learner Hub</h2>
-        </div>
+        <button
+          style={{
+            ...styles.sidebarBtn,
+            ...(hovered === "profileBtn" ? styles.sidebarBtnHover : {}),
+          }}
+          onMouseEnter={() => setHovered("profileBtn")}
+          onMouseLeave={() => setHovered(null)}
+          onClick={() => setView("profile")}
+        >
+          <User style={{ marginRight: 8 }} /> Profile
+        </button>
 
         <button
           style={{
@@ -109,11 +117,25 @@ const Dashboard = () => {
         >
           <Users style={{ marginRight: 8 }} /> View Learners
         </button>
+
+        {/* Logout button at bottom */}
+        <button
+          style={{
+            ...styles.logoutBtn,
+            ...(hovered === "logoutBtn" ? styles.logoutBtnHover : {}),
+            marginTop: "auto", // Push to bottom
+          }}
+          onMouseEnter={() => setHovered("logoutBtn")}
+          onMouseLeave={() => setHovered(null)}
+          onClick={() => navigate("/")} // Navigate to login
+        >
+          Logout
+        </button>
       </div>
 
       {/* Main Content */}
       <div style={styles.content}>
-        {view === "home" && (
+        {view === "profile" && (
           <div style={styles.section}>
             <h1>Welcome to Learner Hub</h1>
             <p>Select an option from the sidebar</p>
@@ -140,7 +162,7 @@ const Dashboard = () => {
               style={styles.input}
             />
             <input
-              type="text"
+              type="tel"
               placeholder="Phone"
               name="phone"
               value={form.phone}
@@ -218,7 +240,6 @@ const Dashboard = () => {
 
 export default Dashboard;
 
-// -------------------- Styles --------------------
 const styles = {
   wrapper: {
     display: "flex",
@@ -262,9 +283,26 @@ const styles = {
     boxShadow: "0 0 10px rgba(138,43,226,0.35)",
     transition: "transform 0.18s ease, box-shadow 0.18s ease",
   },
+  logoutBtn: {
+    display: "flex",
+    alignItems: "center",
+    padding: "12px",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    background: "linear-gradient(90deg, #ff0000ff, #8a2be2)",
+    color: "#fff",
+    boxShadow: "0 0 10px rgba(138,43,226,0.35)",
+    transition: "transform 0.18s ease, box-shadow 0.18s ease",
+  },
   sidebarBtnHover: {
     transform: "scale(1.06)",
-    boxShadow: "0 6px 30px rgba(0,255,255,0.14), 0 0 40px rgba(138,43,226,0.35)",
+    boxShadow: "0 6px 30px rgba(0, 255, 255, 0.29), 0 0 40px rgba(138,43,226,0.35)",
+  },
+  logoutBtnHover: {
+    transform: "scale(1.06)",
+    boxShadow: "0 6px 30px rgba(255, 8, 0, 0.27), 0 0 40px rgba(138,43,226,0.35)",
   },
   content: {
     flex: 1,

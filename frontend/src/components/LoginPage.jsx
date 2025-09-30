@@ -112,7 +112,7 @@ function CredLedgerLogin() {
             <>
               <input
                 type="email"
-                placeholder="Enter your email address"
+                placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 style={styles.input}
@@ -120,7 +120,7 @@ function CredLedgerLogin() {
               />
               <input
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 style={styles.input}

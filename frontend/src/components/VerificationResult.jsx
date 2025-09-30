@@ -55,7 +55,7 @@ const styles = {
     backgroundColor: 'rgba(45, 27, 79, 0.95)',
     padding: '30px',
     borderRadius: '16px',
-    width: '500px',
+    width: '700px',
     boxShadow: '0 0 30px #8a2be2',
     animation: 'pulse 3s infinite',
     textAlign: 'center',
