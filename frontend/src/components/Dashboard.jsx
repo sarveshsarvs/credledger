@@ -137,8 +137,10 @@ const Dashboard = () => {
       <div style={styles.content}>
         {view === "profile" && (
           <div style={styles.section}>
-            <h1>Welcome to Learner Hub</h1>
-            <p>Select an option from the sidebar</p>
+            <h1>Profile</h1>
+            <p>Name:</p>
+            <p>Email:</p>
+            <p>Initituation:</p>
           </div>
         )}
 

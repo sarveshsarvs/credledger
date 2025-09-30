@@ -15,17 +15,14 @@ const upload = multer({ dest: "uploads/" });
 app.use(cors());
 app.use(express.json());
 
-// -------------------- Paths --------------------
 const DB_DIR = path.join("database");
 const USERS_FILE = path.join(DB_DIR, "authentication.json");
 const ISSUER_FILE = path.join(DB_DIR, "issuer_profile.json");
 
-// Ensure database folder exists
 if (!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR, { recursive: true });
 if (!fs.existsSync(USERS_FILE)) fs.writeFileSync(USERS_FILE, "[]", "utf8");
 if (!fs.existsSync(ISSUER_FILE)) fs.writeFileSync(ISSUER_FILE, "[]", "utf8");
 
-// -------------------- Helpers --------------------
 function loadUsers() {
   if (!fs.existsSync(USERS_FILE)) saveUsers([]);
   return JSON.parse(fs.readFileSync(USERS_FILE, "utf8"));
