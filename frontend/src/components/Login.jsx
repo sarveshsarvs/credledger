@@ -1,10 +1,3 @@
-/**
- * CredLedgerLogin Component
- * © 2025 Draven. All rights reserved.
- * This code is licensed for personal or commercial use by the author.
- * Unauthorized copying, modification, or distribution is prohibited.
- */
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { backendAddress } from './Meta';
@@ -23,11 +16,6 @@ function Login() {
     document.body.style.height = '100vh';
     document.body.style.overflow = 'hidden';
     document.body.style.fontFamily = 'Segoe UI, sans-serif';
-    document.body.style.background = `
-      linear-gradient(rgba(27, 20, 63, 0.85), rgba(75, 44, 130, 0.85)),
-      url('/images/bg_image.jpg') center center / cover no-repeat
-    `;
-
     const styleSheet = document.createElement('style');
     styleSheet.type = 'text/css';
     styleSheet.innerText = `
@@ -185,7 +173,7 @@ const styles = {
     cursor: "pointer"
   },
   container: {
-    backgroundColor: 'rgba(45, 27, 79, 0.95)',
+    backgroundColor: 'rgba(45, 27, 79, 0.8)',
     padding: '30px',
     borderRadius: '16px',
     width: '360px',

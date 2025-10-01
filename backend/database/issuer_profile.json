@@ -58,5 +58,12 @@
         "hash": "e8df6c755d117b57b2521fe1a32b1abdb50964547d40e9ae083968e6db31057b"
       }
     ]
+  },
+  {
+    "name": "Sarvesh",
+    "email": "sarveshjrgar@gmail.com",
+    "role": "issuer",
+    "institution": "Saranathan college of engineering",
+    "learners": []
   }
 ]

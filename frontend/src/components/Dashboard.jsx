@@ -145,11 +145,19 @@ const Dashboard = () => {
       <div style={styles.content}>
         {view === "profile" && (
           <div style={styles.profile}>
-            <h1>Profile</h1>
-            <hr />
+            
             {issuer ? (
-              <>
-                <p><strong>Name:</strong> {issuer.name}</p>
+            <>
+                <h1>{issuer.name}</h1>
+                              <hr
+                                  style={{
+                                      border: "0",
+                                      height: "2px",
+                                      background: "linear-gradient(135deg, #3b2a66, #5a3f88, #7a5cc0)", // lighter shades
+                                      borderRadius: "4px",
+                                      margin: "10px 0"
+                                  }}
+                              />
                 <p><strong>Email:</strong> {issuer.email}</p>
                 <p><strong>Institution:</strong> {issuer.institution}</p>
                 <p><strong>Role:</strong> {issuer.role}</p>
@@ -161,8 +169,8 @@ const Dashboard = () => {
           </div>
         )}
 
-        {view === "add" && (
-          <div style={styles.section}>
+              {view === "add" && (
+                  <div style={styles.section}>
             <h2>Add New Learner</h2>
             <input type="text" placeholder="Full Name" name="name" value={form.name} onChange={handleChange} style={styles.input}/>
             <input type="email" placeholder="Email" name="email" value={form.email} onChange={handleChange} style={styles.input}/>
@@ -233,7 +241,6 @@ const styles = {
   wrapper: {
     display: "flex",
     height: "100vh",
-    background: "linear-gradient(135deg, #1B143F, #2D1B4F, #4B2C82)",
     color: "#fff",
     fontFamily: "Arial, sans-serif",
   },
@@ -286,7 +293,7 @@ const styles = {
     overflowY: "auto",
   },
   section: {
-    background: "rgba(255,255,255,0.03)",
+    backgroundColor: 'rgba(45, 27, 79, 0.8)', 
     padding: "20px",
     borderRadius: "10px",
     boxShadow: "0 0 15px rgba(0,0,0,0.3)",
@@ -298,7 +305,7 @@ const styles = {
     display: "flex-start",
     flexDirection: "column",
     alignItems: "center",
-    background: "rgba(255,255,255,0.03)",
+    backgroundColor: 'rgba(45, 27, 79, 0.8)',
     padding: "20px",
     borderRadius: "10px",
     boxShadow: "0 0 15px rgba(0,0,0,0.3)",

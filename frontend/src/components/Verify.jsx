@@ -59,12 +59,11 @@ const styles = {
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
-        background: "linear-gradient(135deg, #1B143F, #2D1B4F, #4B2C82)",
         color: "#fff",
         fontFamily: "Arial, sans-serif",
     },
     card: {
-        backgroundColor: 'rgba(45, 27, 79, 0.95)',
+        backgroundColor: 'rgba(45, 27, 79, 0.8)',
         padding: '30px',
         borderRadius: '16px',
         width: '700px',

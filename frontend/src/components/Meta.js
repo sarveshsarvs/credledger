@@ -1,4 +1,4 @@
-const HOST = "192.168.42.107";
+const HOST = "localhost";
 const FRONTEND_PORT = 3000;
 const BACKEND_PORT = 5000;
 

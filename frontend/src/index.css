@@ -3,6 +3,13 @@ html, body, #root {
     padding: 0;
     height: 100%;
     width: 100%;
-    background-color: #000;
     overflow: hidden;
 }
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(rgba(27, 20, 63, 0.85), rgba(75, 44, 130, 0.85)), url('/public/images/bg_image.jpg') center center / cover no-repeat;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+

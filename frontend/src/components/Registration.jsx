@@ -14,10 +14,6 @@ function Registration() {
     document.body.style.margin = "0";
     document.body.style.padding = "0";
     document.body.style.boxSizing = "border-box";
-    document.body.style.background = `
-      linear-gradient(135deg, rgba(27, 20, 63, 0.85) 0%, rgba(45, 27, 79, 0.85) 40%, rgba(75, 44, 130, 0.85) 100%),
-      url('/images/bg_image.jpg') no-repeat center center / cover
-    `;
     document.body.style.height = "100vh";
     document.body.style.overflow = "hidden";
     document.body.style.fontFamily = "Segoe UI, sans-serif";
@@ -47,7 +43,6 @@ function Registration() {
         font-size: 14px;
         outline: none;
         cursor: pointer;
-        background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
         background-repeat: no-repeat;
         background-position: right 10px center;
         background-size: 16px;
