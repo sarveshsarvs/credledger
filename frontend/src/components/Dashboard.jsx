@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { UserPlus, Users, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { QRCodeCanvas } from "qrcode.react"; // ✅ updated import
+import { QRCodeCanvas } from "qrcode.react";
 
 const Dashboard = () => {
   const [view, setView] = useState("profile");
