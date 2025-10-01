@@ -120,7 +120,7 @@ app.post("/api/add-learner", async (req, res) => {
   saveIssuers(issuers);
 
   // Generate QR code linking to frontend verifier page
-  const frontendURL = `http://localhost:5173/verification-result/${learnerHash}`;
+  const frontendURL = `http://localhost:5173/verify/${learnerHash}`;
   const qrDataURL = await QRCode.toDataURL(frontendURL);
 
   res.json({

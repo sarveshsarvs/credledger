@@ -66,7 +66,7 @@ function Registration() {
       return;
     }
     try {
-      const res = await fetch("http://localhost:5000/api/signup", {
+      const res = await fetch("http://192.168.29.21:5000/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password, role: "issuer", institution }),
