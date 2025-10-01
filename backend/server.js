@@ -4,11 +4,11 @@ import crypto from "crypto";
 import cors from "cors";
 import fs from "fs";
 import path from "path";
+import QRCode from "qrcode";
 import { addBlock, verifyCredential } from "./blockchain.js";
 
 const PORT = 3000;
 const HOST = "0.0.0.0";
-
 const app = express();
 const upload = multer({ dest: "uploads/" });
 
@@ -102,22 +102,33 @@ app.post("/api/login", (req, res) => {
 });
 
 // Add Learner
-app.post("/api/add-learner", (req, res) => {
+app.post("/api/add-learner", async (req, res) => {
   const { name, email, phone, completionDate, skill, skillDescription, issuerEmail } = req.body;
-
-  if ( !issuerEmail || !name || !email || !phone || !completionDate || !skill || !skillDescription) {
+  if (!issuerEmail || !name || !email || !phone || !completionDate || !skill || !skillDescription) {
     return res.status(400).json({ message: "All fields required" });
   }
 
   const issuers = loadIssuers();
   const issuer = issuers.find((i) => i.email === issuerEmail);
   if (!issuer) return res.status(404).json({ message: "Issuer email not found" });
+
   const learnerHash = createHash(name + email + phone + completionDate + skill + Date.now());
   const credential = { name, email, phone, completionDate, skill, skillDescription, hash: learnerHash };
+
   issuer.learners.push(credential);
   addBlock(credential);
   saveIssuers(issuers);
-  res.json({ message: "Learner added successfully", learner: credential });
+
+  // Generate QR code linking to frontend verifier page
+  const frontendURL = `http://localhost:5173/verification-result/${learnerHash}`;
+  const qrDataURL = await QRCode.toDataURL(frontendURL);
+
+  res.json({
+    message: "Learner added successfully",
+    learner: credential,
+    qrCode: qrDataURL, // <-- Base64 PNG QR code
+    verifyURL: frontendURL
+  });
 });
 
 // Get Learners for issuer
@@ -137,6 +148,7 @@ app.get("/api/issuers", (req, res) => {
   res.json(issuers || []);
 });
 
+// Verify by hash
 app.get("/verify/:hash", (req, res) => {
   const result = verifyCredential(req.params.hash);
   if (result) {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { UserPlus, Users, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { QRCodeCanvas } from "qrcode.react"; // ✅ updated import
 
 const Dashboard = () => {
   const [view, setView] = useState("profile");
@@ -18,7 +19,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [issuer, setIssuer] = useState(null);
 
-  const issuerEmail = state ? state.issuerEmail : null
+  const issuerEmail = state ? state.issuerEmail : null;
 
   useEffect(() => {
     if (!issuerEmail) return;
@@ -34,12 +35,11 @@ const Dashboard = () => {
       fetch("http://localhost:3000/api/issuers")
         .then((res) => res.json())
         .then((data) => {
-        const foundIssuer = data.find((i) => i.email === issuerEmail);
-        setIssuer(foundIssuer || null);
+          const foundIssuer = data.find((i) => i.email === issuerEmail);
+          setIssuer(foundIssuer || null);
         })
         .catch((err) => console.error("Error loading issuer profile:", err));
     }
-
   }, [view, issuerEmail]);
 
   const handleChange = (e) =>
@@ -59,7 +59,6 @@ const Dashboard = () => {
     }
 
     try {
-        console.log(JSON.stringify({ ...form }))
       const res = await fetch("http://localhost:3000/api/add-learner", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -69,7 +68,6 @@ const Dashboard = () => {
       const data = await res.json();
       if (res.ok) {
         alert("✅ Learner added successfully");
-        // Clear form
         setForm({
           name: "",
           email: "",
@@ -78,9 +76,8 @@ const Dashboard = () => {
           skill: "",
           skillDescription: "",
         });
-        // Update learners list locally
         setLearners((prev) => [...prev, data.learner]);
-        setView("view"); // Switch to view tab to see new learner
+        setView("view");
       } else {
         alert("❌ " + data.message);
       }
@@ -130,16 +127,15 @@ const Dashboard = () => {
           <Users style={{ marginRight: 8 }} /> View Learners
         </button>
 
-        {/* Logout button at bottom */}
         <button
           style={{
             ...styles.logoutBtn,
             ...(hovered === "logoutBtn" ? styles.logoutBtnHover : {}),
-            marginTop: "auto", // Push to bottom
+            marginTop: "auto",
           }}
           onMouseEnter={() => setHovered("logoutBtn")}
           onMouseLeave={() => setHovered(null)}
-          onClick={() => navigate("/")} // Navigate to login
+          onClick={() => navigate("/")}
         >
           Logout
         </button>
@@ -148,74 +144,32 @@ const Dashboard = () => {
       {/* Main Content */}
       <div style={styles.content}>
         {view === "profile" && (
-            <div style={styles.profile}>
-                <h1>Profile</h1>
-                <hr />
-                {issuer ? (
-                <>
-                    <p><strong>Name:</strong> {issuer.name}</p>
-                    <p><strong>Email:</strong> {issuer.email}</p>
-                    <p><strong>Institution:</strong> {issuer.institution}</p>
-                    <p><strong>Role:</strong> {issuer.role}</p>
-                    <p><strong>Total Learners:</strong> {issuer.learners.length}</p>
-                </>
-                ) : (
-                <p>Loading profile...</p>
-                )}
-            </div>
+          <div style={styles.profile}>
+            <h1>Profile</h1>
+            <hr />
+            {issuer ? (
+              <>
+                <p><strong>Name:</strong> {issuer.name}</p>
+                <p><strong>Email:</strong> {issuer.email}</p>
+                <p><strong>Institution:</strong> {issuer.institution}</p>
+                <p><strong>Role:</strong> {issuer.role}</p>
+                <p><strong>Total Learners:</strong> {issuer.learners.length}</p>
+              </>
+            ) : (
+              <p>Loading profile...</p>
+            )}
+          </div>
         )}
-
 
         {view === "add" && (
           <div style={styles.section}>
             <h2>Add New Learner</h2>
-            <input
-              type="text"
-              placeholder="Full Name"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              style={styles.input}
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              style={styles.input}
-            />
-            <input
-              type="tel"
-              placeholder="Phone"
-              name="phone"
-              value={form.phone}
-              onChange={handleChange}
-              style={styles.input}
-            />
-            <input
-              type="date"
-              name="completionDate"
-              value={form.completionDate}
-              onChange={handleChange}
-              style={styles.input}
-            />
-            <input
-              type="text"
-              placeholder="Skill"
-              name="skill"
-              value={form.skill}
-              onChange={handleChange}
-              style={styles.input}
-            />
-            <textarea
-              placeholder="Skill Description"
-              name="skillDescription"
-              value={form.skillDescription}
-              onChange={handleChange}
-              style={{ ...styles.input, height: "80px" }}
-            />
-
+            <input type="text" placeholder="Full Name" name="name" value={form.name} onChange={handleChange} style={styles.input}/>
+            <input type="email" placeholder="Email" name="email" value={form.email} onChange={handleChange} style={styles.input}/>
+            <input type="tel" placeholder="Phone" name="phone" value={form.phone} onChange={handleChange} style={styles.input}/>
+            <input type="date" name="completionDate" value={form.completionDate} onChange={handleChange} style={styles.input}/>
+            <input type="text" placeholder="Skill" name="skill" value={form.skill} onChange={handleChange} style={styles.input}/>
+            <textarea placeholder="Skill Description" name="skillDescription" value={form.skillDescription} onChange={handleChange} style={{ ...styles.input, height: "80px" }}/>
             <button
               style={{
                 ...styles.addBtn,
@@ -241,7 +195,8 @@ const Dashboard = () => {
                   <tr>
                     <th style={styles.th}>Name</th>
                     <th style={styles.th}>Email</th>
-                    <th style={styles.th}>Credential hash</th>
+                    <th style={styles.th}>Credential Hash</th>
+                    <th style={styles.th}>QR Code</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -250,6 +205,16 @@ const Dashboard = () => {
                       <td style={styles.td}>{l.name}</td>
                       <td style={styles.td}>{l.email}</td>
                       <td style={styles.td}>{l.hash}</td>
+                      <td style={styles.td}>
+                        <a href={`http://localhost:3000/verify/${l.hash}`} target="_blank" rel="noopener noreferrer">
+                          <QRCodeCanvas
+                            value={`http://localhost:3000/verify/${l.hash}`}
+                            size={64}
+                            bgColor="#ffffff"
+                            fgColor="#000000"
+                          />
+                        </a>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -280,19 +245,6 @@ const styles = {
     flexDirection: "column",
     gap: "15px",
     boxShadow: "2px 0 10px rgba(0,0,0,0.4)",
-  },
-  logo: {
-    display: "flex",
-    alignItems: "center",
-    marginBottom: "30px",
-    gap: "10px",
-  },
-  logoText: {
-    fontSize: "20px",
-    fontWeight: "bold",
-    background: "linear-gradient(90deg, #00ffff, #8a2be2)",
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent",
   },
   sidebarBtn: {
     display: "flex",
@@ -375,8 +327,7 @@ const styles = {
   },
   addBtnHover: {
     transform: "scale(1.04)",
-    boxShadow:
-      "0 8px 36px rgba(0,255,255,0.12), 0 0 40px rgba(138,43,226,0.28)",
+    boxShadow: "0 8px 36px rgba(0,255,255,0.12), 0 0 40px rgba(138,43,226,0.28)",
   },
   table: {
     width: "100%",
