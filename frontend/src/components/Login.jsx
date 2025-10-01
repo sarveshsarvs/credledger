@@ -7,7 +7,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Host from "./Meta";
+import { backendAddress } from './Meta';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -40,7 +40,7 @@ function Login() {
     document.head.appendChild(styleSheet);
   }, []);
 
-  const handleLogin = async (e) => {
+    const handleLogin = async (e) => {
     e.preventDefault();
 
     if (userType === "verifier") {
@@ -49,7 +49,7 @@ function Login() {
 
     const payload =  { email, password, role: userType };
 
-    const res = await fetch("http://192.168.29.21:5000/api/login", {
+      const res = await fetch(`${backendAddress}/api/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -70,7 +70,7 @@ function Login() {
     }
 
     try {
-      const res = await fetch(`http://192.168.29.21:5000/api/verify/${hashValue}`); 
+        const res = await fetch(`${backendAddress}/api/verify/${hashValue}`); 
       const data = await res.json();
       navigate(`/verify/${hashValue}`, { state: data });
     } catch (err) {

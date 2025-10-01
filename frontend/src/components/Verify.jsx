@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
 import axios from "axios";
+import { backendAddress } from "./Meta";
 
 function Verify() {
     const { state } = useLocation();
@@ -9,7 +10,7 @@ function Verify() {
 
     useEffect(() => {
         if (!verification && hash) {
-            axios.get(`http://localhost:5000/api/verify/${hash}`)
+            axios.get(`${backendAddress}/api/verify/${hash}`)
                 .then(res => setVerification(res.data))
                 .catch(() => setVerification({ valid: false }));
         }

@@ -101,7 +101,6 @@ app.post("/api/login", (req, res) => {
   }
 });
 
-// Add Learner
 app.post("/api/add-learner", async (req, res) => {
   const { name, email, phone, completionDate, skill, skillDescription, issuerEmail } = req.body;
   if (!issuerEmail || !name || !email || !phone || !completionDate || !skill || !skillDescription) {
@@ -119,19 +118,17 @@ app.post("/api/add-learner", async (req, res) => {
   addBlock(credential);
   saveIssuers(issuers);
 
-  // Generate QR code linking to frontend verifier page
-  const frontendURL = `http://localhost:5173/verification-result/${learnerHash}`;
+  const frontendURL = `http://localhost:3000/verify/${learnerHash}`;
   const qrDataURL = await QRCode.toDataURL(frontendURL);
 
   res.json({
     message: "Learner added successfully",
     learner: credential,
-    qrCode: qrDataURL, // <-- Base64 PNG QR code
+    qrCode: qrDataURL,
     verifyURL: frontendURL
   });
 });
 
-// Get Learners for issuer
 app.get("/api/learners", (req, res) => {
   const issuerEmail = req.query.issuerEmail;
   if (!issuerEmail) return res.status(400).json({ message: "issuerEmail query required" });
@@ -158,7 +155,7 @@ app.get("/api/verify/:hash", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.send("Credential backend is running!");
+  res.send("Backend Server is running!");
 });
 
 app.listen(PORT, HOST, () => {

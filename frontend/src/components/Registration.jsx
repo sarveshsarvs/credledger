@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { backendAddress } from "./Meta";
 
 function Registration() {
   const [name, setName] = useState("");
@@ -66,7 +67,7 @@ function Registration() {
       return;
     }
     try {
-      const res = await fetch("http://192.168.29.21:5000/api/signup", {
+        const res = await fetch(`${backendAddress}/api/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password, role: "issuer", institution }),

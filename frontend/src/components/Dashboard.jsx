@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { UserPlus, Users, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { QRCodeCanvas } from "qrcode.react";
+import { frontendAddress, backendAddress } from "./Meta";
 
 const Dashboard = () => {
   const [view, setView] = useState("profile");
@@ -24,15 +24,15 @@ const Dashboard = () => {
   useEffect(() => {
     if (!issuerEmail) return;
 
-    if (view === "view") {
-      fetch(`http://192.168.29.21:5000/api/learners?issuerEmail=${issuerEmail}`)
+      if (view === "view") {
+        fetch(`${backendAddress}/api/learners?issuerEmail=${issuerEmail}`)
         .then((res) => res.json())
         .then((data) => setLearners(data))
         .catch((err) => console.error("Error loading learners:", err));
     }
 
     if (view === "profile") {
-      fetch("http://192.168.29.21:5000/api/issuers")
+        fetch(`${backendAddress}/api/issuers`)
         .then((res) => res.json())
         .then((data) => {
           const foundIssuer = data.find((i) => i.email === issuerEmail);
@@ -42,8 +42,7 @@ const Dashboard = () => {
     }
   }, [view, issuerEmail]);
 
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleAddLearner = async () => {
     const { name, email, phone, completionDate, skill, skillDescription } = form;
@@ -60,7 +59,7 @@ const Dashboard = () => {
 
     try {
         console.log(JSON.stringify({ ...form }))
-      const res = await fetch("http://192.168.29.21:5000/api/add-learner", {
+        const res = await fetch(`${backendAddress}/api/add-learner`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, issuerEmail }),
@@ -185,44 +184,44 @@ const Dashboard = () => {
           </div>
         )}
 
-        {view === "view" && (
-          <div style={styles.section}>
-            <h2>All Learners</h2>
-            {learners.length === 0 ? (
-              <p>No learners yet</p>
-            ) : (
-              <table style={styles.table}>
-                <thead>
-                  <tr>
-                    <th style={styles.th}>Name</th>
-                    <th style={styles.th}>Email</th>
-                    <th style={styles.th}>Credential Hash</th>
-                    <th style={styles.th}>QR Code</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {learners.map((l, i) => (
-                    <tr key={i}>
-                      <td style={styles.td}>{l.name}</td>
-                      <td style={styles.td}>{l.email}</td>
-                      <td style={styles.td}>{l.hash}</td>
-                      <td style={styles.td}>
-                        <a href={`http://192.168.29.21:3000/verify/${l.hash}`} target="_blank" rel="noopener noreferrer">
-                          <QRCodeCanvas
-                            value={`http://192.168.29.21:3000/verify/${l.hash}`}
-                            size={64}
-                            bgColor="#ffffff"
-                            fgColor="#000000"
-                          />
-                        </a>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
-        )}
+              {view === "view" && (
+                  <div style={styles.section}>
+                      <h2>All Learners</h2>
+                      {learners.length === 0 ? (
+                          <p>No learners yet</p>
+                      ) : (
+                          <table style={styles.table}>
+                              <thead>
+                                  <tr>
+                                      <th style={styles.th}>Name</th>
+                                      <th style={styles.th}>Email</th>
+                                      <th style={styles.th}>Credential Hash</th>
+                                      <th style={styles.th}>QR Code</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  {learners.map((l, i) => {
+                                      const verifyURL = `${frontendAddress}/verify/${l.hash}`;
+                                      const qrAPI = `https://api.qrserver.com/v1/create-qr-code/?size=64x64&data=${encodeURIComponent(verifyURL)}`;
+                                      return (
+                                          <tr key={i}>
+                                              <td style={styles.td}>{l.name}</td>
+                                              <td style={styles.td}>{l.email}</td>
+                                              <td style={styles.td}>{l.hash}</td>
+                                              <td style={styles.td}>
+                                                  <a href={verifyURL} target="_blank" rel="noopener noreferrer">
+                                                      <img src={qrAPI} alt="QR Code" />
+                                                  </a>
+                                              </td>
+                                          </tr>
+                                      );
+                                  })}
+                              </tbody>
+                          </table>
+                      )}
+                  </div>
+              )}
+
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import Login from "./Login";
 import IssuerRegistration from "./components/Registration";
 import Dashboard from "./components/Dashboard";
 import VerificationResult from "./components/Verify";
-
+import './index.css';
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
