@@ -7,7 +7,7 @@ import path from "path";
 import QRCode from "qrcode";
 import { addBlock, verifyCredential } from "./blockchain.js";
 
-const PORT = 3000;
+const PORT = 5000;
 const HOST = "0.0.0.0";
 const app = express();
 const upload = multer({ dest: "uploads/" });
@@ -148,8 +148,12 @@ app.get("/api/issuers", (req, res) => {
   res.json(issuers || []);
 });
 
+<<<<<<< HEAD
 // Verify by hash
 app.get("/verify/:hash", (req, res) => {
+=======
+app.get("/api/verify/:hash", (req, res) => {
+>>>>>>> 1cf0eb81d2d5eeba3ff065dc0451ca26f8d6e834
   const result = verifyCredential(req.params.hash);
   if (result) {
     res.json({ valid: true, block: result });
