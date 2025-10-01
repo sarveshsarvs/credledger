@@ -25,14 +25,14 @@ const Dashboard = () => {
     if (!issuerEmail) return;
 
     if (view === "view") {
-      fetch(`http://localhost:5000/api/learners?issuerEmail=${issuerEmail}`)
+      fetch(`http://192.168.29.21:5000/api/learners?issuerEmail=${issuerEmail}`)
         .then((res) => res.json())
         .then((data) => setLearners(data))
         .catch((err) => console.error("Error loading learners:", err));
     }
 
     if (view === "profile") {
-      fetch("http://localhost:5000/api/issuers")
+      fetch("http://192.168.29.21:5000/api/issuers")
         .then((res) => res.json())
         .then((data) => {
           const foundIssuer = data.find((i) => i.email === issuerEmail);
@@ -60,7 +60,7 @@ const Dashboard = () => {
 
     try {
         console.log(JSON.stringify({ ...form }))
-      const res = await fetch("http://localhost:3000/api/add-learner", {
+      const res = await fetch("http://192.168.29.21:5000/api/add-learner", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, issuerEmail }),
@@ -207,9 +207,9 @@ const Dashboard = () => {
                       <td style={styles.td}>{l.email}</td>
                       <td style={styles.td}>{l.hash}</td>
                       <td style={styles.td}>
-                        <a href={`http://localhost:3000/verify/${l.hash}`} target="_blank" rel="noopener noreferrer">
+                        <a href={`http://192.168.29.21:3000/verify/${l.hash}`} target="_blank" rel="noopener noreferrer">
                           <QRCodeCanvas
-                            value={`http://localhost:3000/verify/${l.hash}`}
+                            value={`http://192.168.29.21:3000/verify/${l.hash}`}
                             size={64}
                             bgColor="#ffffff"
                             fgColor="#000000"

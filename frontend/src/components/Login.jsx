@@ -49,7 +49,7 @@ function Login() {
 
     const payload =  { email, password, role: userType };
 
-    const res = await fetch("http://localhost:5000/api/login", {
+    const res = await fetch("http://192.168.29.21:5000/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -70,7 +70,7 @@ function Login() {
     }
 
     try {
-      const res = await fetch(`http://localhost:5000/api/verify/${hashValue}`); 
+      const res = await fetch(`http://192.168.29.21:5000/api/verify/${hashValue}`); 
       const data = await res.json();
       navigate(`/verify/${hashValue}`, { state: data });
     } catch (err) {
