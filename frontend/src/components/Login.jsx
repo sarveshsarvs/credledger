@@ -8,7 +8,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-function CredLedgerLogin() {
+function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userType, setUserType] = useState('issuer');
@@ -48,7 +48,7 @@ function CredLedgerLogin() {
 
     const payload =  { email, password, role: userType };
 
-    const res = await fetch("http://localhost:3000/api/login", {
+    const res = await fetch("http://localhost:5000/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -69,9 +69,9 @@ function CredLedgerLogin() {
     }
 
     try {
-      const res = await fetch(`http://localhost:3000/verify/${hashValue}`); 
+      const res = await fetch(`http://localhost:5000/api/verify/${hashValue}`); 
       const data = await res.json();
-      navigate("/verification-result", { state: data });
+      navigate(`/verify/${hashValue}`, { state: data });
     } catch (err) {
       console.error(err);
       alert("❌ Error verifying credential");
@@ -249,4 +249,4 @@ const styles = {
   },
 };
 
-export default CredLedgerLogin;
+export default Login;

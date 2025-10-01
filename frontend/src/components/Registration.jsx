@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function IssuerRegistration() {
+function Registration() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -66,7 +66,7 @@ function IssuerRegistration() {
       return;
     }
     try {
-      const res = await fetch("http://localhost:3000/api/signup", {
+      const res = await fetch("http://localhost:5000/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password, role: "issuer", institution }),
@@ -213,7 +213,7 @@ const styles = {
   },
 };
 
-export default IssuerRegistration;
+export default Registration;
 
 
 

@@ -6,7 +6,7 @@ import fs from "fs";
 import path from "path";
 import { addBlock, verifyCredential } from "./blockchain.js";
 
-const PORT = 3000;
+const PORT = 5000;
 const HOST = "0.0.0.0";
 
 const app = express();
@@ -137,7 +137,7 @@ app.get("/api/issuers", (req, res) => {
   res.json(issuers || []);
 });
 
-app.get("/verify/:hash", (req, res) => {
+app.get("/api/verify/:hash", (req, res) => {
   const result = verifyCredential(req.params.hash);
   if (result) {
     res.json({ valid: true, block: result });

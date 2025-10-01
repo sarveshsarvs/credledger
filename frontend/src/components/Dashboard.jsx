@@ -24,14 +24,14 @@ const Dashboard = () => {
     if (!issuerEmail) return;
 
     if (view === "view") {
-      fetch(`http://localhost:3000/api/learners?issuerEmail=${issuerEmail}`)
+      fetch(`http://localhost:5000/api/learners?issuerEmail=${issuerEmail}`)
         .then((res) => res.json())
         .then((data) => setLearners(data))
         .catch((err) => console.error("Error loading learners:", err));
     }
 
     if (view === "profile") {
-      fetch("http://localhost:3000/api/issuers")
+      fetch("http://localhost:5000/api/issuers")
         .then((res) => res.json())
         .then((data) => {
         const foundIssuer = data.find((i) => i.email === issuerEmail);
@@ -60,7 +60,7 @@ const Dashboard = () => {
 
     try {
         console.log(JSON.stringify({ ...form }))
-      const res = await fetch("http://localhost:3000/api/add-learner", {
+      const res = await fetch("http://localhost:5000/api/add-learner", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, issuerEmail }),
