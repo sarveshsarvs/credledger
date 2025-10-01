@@ -148,12 +148,7 @@ app.get("/api/issuers", (req, res) => {
   res.json(issuers || []);
 });
 
-<<<<<<< HEAD
-// Verify by hash
-app.get("/verify/:hash", (req, res) => {
-=======
 app.get("/api/verify/:hash", (req, res) => {
->>>>>>> 1cf0eb81d2d5eeba3ff065dc0451ca26f8d6e834
   const result = verifyCredential(req.params.hash);
   if (result) {
     res.json({ valid: true, block: result });
