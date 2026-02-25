@@ -1,83 +1,154 @@
-# CredLedger 🔗
+# CredLedger
 
-> A secure, tamper-proof digital credential system using blockchain for trusted verification.
-
----
-
-## 🚀 Overview
-
-CredLedger is a blockchain-powered credential management system designed to eliminate **fake certificates** and simplify **verification processes**.
-
-It enables institutions to issue verifiable digital credentials, while allowing recruiters and third parties to instantly validate authenticity using QR codes.
+Blockchain-backed credential verification system using Node.js and React.
 
 ---
 
-## 🎯 Problem Statement
+## 1. Introduction
 
-- Fake certificates and skill fraud are increasing  
-- Verification is manual, slow, and unreliable  
-- No centralized trust system for credentials  
-- Recruiters struggle to validate authenticity  
+CredLedger is a credential management system that ensures integrity, traceability, and verifiability of issued certificates.
 
----
-
-## 💡 Solution
-
-CredLedger introduces a **secure credential lifecycle**:
-
-1. Institutions issue credentials  
-2. Credentials are recorded on blockchain  
-3. A unique hash + QR code is generated  
-4. Recruiters verify instantly using the system  
+The system uses a custom blockchain implementation where each credential is stored as a block. Each block contains a hash and reference to the previous block, ensuring immutability.
 
 ---
 
-## 🧠 Key Features
+## 2. System Architecture
 
-- ✔️ Blockchain-based credential storage  
-- ✔️ Tamper-proof certificate records  
-- ✔️ QR Code verification system  
-- ✔️ Authentication system for users  
-- ✔️ Issuer profile management  
-- ✔️ Fast and secure validation  
+Client (React) → REST API (Node.js/Express) → Blockchain Module → JSON Storage
 
----
-
-## 👥 User Roles
-
-### 🎓 Student
-- View issued credentials  
-- Share certificates via QR  
-
-### 🏫 Issuer (Institution)
-- Issue credentials  
-- Manage issuer profile  
-
-### 💼 Verifier (Recruiter)
-- Scan QR code  
-- Validate authenticity instantly  
+- Frontend handles user interaction
+- Backend processes requests and business logic
+- Blockchain module ensures data integrity
+- JSON files persist data
 
 ---
 
-## 🏗️ Tech Stack
+## 3. Project Structure
 
-### Frontend
-- React.js  
-- HTML, CSS, JavaScript  
-
-### Backend
-- Node.js  
-- Express.js  
-
-### Database
-- JSON-based storage  
-
-### Blockchain
-- Custom blockchain implementation (`blockchain.js`)  
-
-### Other
-- QR Code generation  
+credledger/
+│
+├── backend/
+│   ├── database/
+│   │   ├── authentication.json
+│   │   ├── blockchain.json
+│   │   ├── issuer_profile.json
+│   │
+│   ├── blockchain.js
+│   ├── server.js
+│   └── .env
+│
+├── frontend/
+│   ├── public/
+│   │   ├── images/
+│   │   └── index.html
+│   │
+│   ├── src/
+│   │   ├── components/
+│   │   │   └── Login.js
+│   │   ├── index.js
+│   │   └── index.css
+│
+├── package.json
+└── README.md
 
 ---
 
-## ⚙️ Project Structure
+## 4. Data Model
+
+Block Structure:
+
+{
+  "index": 1,
+  "timestamp": "ISO_DATE",
+  "data": {
+    "issuer": "string",
+    "recipient": "string",
+    "credential": "string"
+  },
+  "previousHash": "string",
+  "hash": "string"
+}
+
+---
+
+## 5. Workflow
+
+1. Issuer logs into the system
+2. Issues a credential
+3. Credential data is hashed
+4. New block is created
+5. Block is appended to the chain
+6. Chain is saved to blockchain.json
+7. Credential can be verified later
+
+---
+
+## 6. Blockchain Logic
+
+- Each block contains hash of previous block
+- Hash ensures data integrity
+- Any modification breaks the chain
+- Chain validation ensures authenticity
+
+---
+
+## 7. API Overview
+
+Authentication:
+POST /login
+
+Credential Management:
+POST /issue
+GET /verify/:id
+
+---
+
+## 8. Security
+
+- Hash-based integrity verification
+- Immutable chain structure
+- Controlled access via authentication
+
+---
+
+## 9. Setup
+
+Clone repository:
+git clone https://github.com/your-username/credledger.git
+cd credledger
+
+Install dependencies:
+npm install
+
+Run backend:
+cd backend
+node server.js
+
+Run frontend:
+cd frontend
+npm start
+
+---
+
+## 10. Limitations
+
+- Uses JSON storage (not scalable)
+- Not fully decentralized
+- No consensus mechanism
+- No wallet-based authentication
+
+---
+
+## 11. Future Improvements
+
+- Use database instead of JSON
+- Integrate real blockchain (Ethereum/Hyperledger)
+- Add smart contracts
+- Add cryptographic signatures
+- Improve authentication
+
+---
+
+## License
+
+MIT
